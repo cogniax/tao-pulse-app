@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/network/api_client.dart';
+import '../../feed/presentation/feed_filter.dart';
 
 final settingsRepositoryProvider = Provider<SettingsRepository>((ref) {
   return SettingsRepository(ref.watch(apiClientProvider));
@@ -10,6 +11,10 @@ final settingsDashboardProvider = FutureProvider<SettingsDashboard>((
   ref,
 ) async {
   return ref.watch(settingsRepositoryProvider).getDashboard();
+});
+
+final watchlistNetuidsProvider = FutureProvider<Set<int>>((ref) async {
+  return ref.watch(settingsRepositoryProvider).getWatchedNetuids();
 });
 
 class SettingsRepository {
@@ -57,6 +62,12 @@ class SettingsRepository {
               as String? ??
           'Dark',
     );
+  }
+
+  Future<Set<int>> getWatchedNetuids() async {
+    final watchlistData = await _apiClient.get('/api/v1/watchlist');
+    final watchlist = watchlistData['items'] as List<dynamic>? ?? <dynamic>[];
+    return watchedNetuidsFromItems(watchlist);
   }
 }
 

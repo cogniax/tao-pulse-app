@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
-import '../../feed/models/feed_item.dart';
+import '../../settings/data/settings_repository.dart';
+import '../models/feed_item.dart';
+import 'feed_filter.dart';
 import 'feed_view_model.dart';
 import 'widgets/feed_item_tile.dart';
 
@@ -30,6 +32,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     final feedAsync = ref.watch(feedViewModelProvider);
+    final watchlistNetuidsAsync = ref.watch(watchlistNetuidsProvider);
     final bottomDockClearance = 92.0 + MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
@@ -73,7 +76,15 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
           Expanded(
             child: feedAsync.when(
               data: (items) {
-                final filteredItems = _applyFilter(items, _selectedFilter);
+                final watchedNetuids = watchlistNetuidsAsync.maybeWhen(
+                  data: (netuids) => netuids,
+                  orElse: () => const <int>{},
+                );
+                final filteredItems = applyFeedFilter(
+                  items,
+                  _selectedFilter,
+                  watchedNetuids: watchedNetuids,
+                );
                 return RefreshIndicator(
                   onRefresh: () => ref.refresh(feedViewModelProvider.future),
                   child: ListView.separated(
@@ -97,34 +108,6 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     );
   }
 
-  List<FeedItem> _applyFilter(List<FeedItem> items, String filter) {
-    switch (filter) {
-      case 'All':
-        return items;
-      case 'Watchlist':
-        return items
-            .where((item) => item.tags.any((tag) => tag.startsWith('SN')))
-            .toList();
-      case 'Subnets':
-        return items
-            .where((item) => item.category == 'Subnet Activity')
-            .toList();
-      case 'Stake':
-        return items
-            .where((item) => item.category == 'Stake Movement')
-            .toList();
-      case 'Validators':
-        return items
-            .where((item) => item.title.toLowerCase().contains('validator'))
-            .toList();
-      case 'Governance':
-        return items.where((item) => item.category == 'Governance').toList();
-      case 'AI Insights':
-        return items.where((item) => item.category == 'AI Insight').toList();
-      default:
-        return items;
-    }
-  }
 }
 
 class _FeedFilterChip extends StatelessWidget {
