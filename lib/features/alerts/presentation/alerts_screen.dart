@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../theme/theme.dart';
 import '../../../widgets/app_top_bar.dart';
+import '../../ask_ai/data/ask_ai_repository.dart';
 import '../data/alerts_repository.dart';
 
 class AlertsScreen extends ConsumerStatefulWidget {
@@ -149,13 +150,13 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-class _AlertCard extends StatelessWidget {
+class _AlertCard extends ConsumerWidget {
   const _AlertCard({required this.item});
 
   final AlertItem item;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final color = _colorForSeverity(item.severity);
     final icon = _iconForCategory(item.category);
@@ -240,7 +241,7 @@ class _AlertCard extends StatelessWidget {
                 Row(
                   children: [
                     FilledButton.tonal(
-                      onPressed: () {},
+                      onPressed: () => _askAi(context, ref),
                       style: FilledButton.styleFrom(
                         backgroundColor: AppColors.aiPurple.withValues(
                           alpha: 0.18,
@@ -264,6 +265,80 @@ class _AlertCard extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _askAi(BuildContext context, WidgetRef ref) async {
+    final message =
+        'Explain this alert and what it means for me: '
+        '${item.title}. ${item.description}';
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.showSnackBar(
+      const SnackBar(content: Text('Sending message to TaoPulse AI...')),
+    );
+
+    final ChatReply reply;
+    try {
+      reply = await ref.read(askAiRepositoryProvider).sendMessage(message);
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text("Couldn't reach TaoPulse AI. Please try again."),
+        ),
+      );
+      return;
+    } finally {
+      messenger.hideCurrentSnackBar();
+    }
+
+    if (!context.mounted) {
+      return;
+    }
+
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: AppColors.surfaceCard,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          AppSpacing.lg,
+          AppSpacing.lg,
+          AppSpacing.xxl,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              item.title,
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontSize: 18),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Text(
+              reply.content,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: AppColors.textSecondary,
+                height: 1.45,
+              ),
+            ),
+            if (reply.sources.isNotEmpty) ...[
+              const SizedBox(height: AppSpacing.lg),
+              Text(
+                'Sources: ${reply.sources.join(', ')}',
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: AppColors.textSecondary),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }
