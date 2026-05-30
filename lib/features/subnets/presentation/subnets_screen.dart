@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
 import '../data/subnets_repository.dart';
+import '../domain/tao_format.dart';
 
 class SubnetsScreen extends ConsumerWidget {
   const SubnetsScreen({super.key});
@@ -129,7 +130,7 @@ class _SubnetCard extends StatelessWidget {
                     const SizedBox(height: AppSpacing.sm),
                     _MetricRow(
                       label: 'TVL',
-                      value: '${_formatCompactTao(subnet.tvlTao)} T',
+                      value: '${formatCompactTao(subnet.tvlTao)} T',
                     ),
                   ],
                 ),
@@ -140,12 +141,12 @@ class _SubnetCard extends StatelessWidget {
                   children: [
                     _MetricRow(
                       label: 'Market',
-                      value: '${_formatCompactTao(subnet.marketCapTao)} T',
+                      value: '${formatCompactTao(subnet.marketCapTao)} T',
                     ),
                     const SizedBox(height: AppSpacing.sm),
                     _MetricRow(
                       label: 'Volume 24h',
-                      value: '${_formatCompactTao(subnet.volume24hTao)} T',
+                      value: '${formatCompactTao(subnet.volume24hTao)} T',
                     ),
                   ],
                 ),
@@ -292,20 +293,6 @@ class _KeywordChip extends StatelessWidget {
       ),
     );
   }
-}
-
-String _formatCompactTao(double value) {
-  final absolute = value.abs();
-  if (absolute >= 1000000) {
-    return '${(value / 1000000).toStringAsFixed(absolute >= 10000000 ? 0 : 1)}M';
-  }
-  if (absolute >= 1000) {
-    return '${(value / 1000).toStringAsFixed(absolute >= 10000 ? 0 : 1)}K';
-  }
-  if (value % 1 == 0) {
-    return value.toStringAsFixed(0);
-  }
-  return value.toStringAsFixed(1);
 }
 
 String _formatPreciseTao(double value) {

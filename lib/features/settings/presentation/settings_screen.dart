@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
 import '../data/settings_repository.dart';
+import '../domain/text_format.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -56,7 +57,7 @@ class SettingsScreen extends ConsumerWidget {
               description: 'Customize how Ask AI responds\nand behaves.',
               icon: Icons.auto_awesome_outlined,
               iconColor: AppColors.aiPurple,
-              trailingText: _titleCase(dashboard.aiPreferenceLabel),
+              trailingText: titleCase(dashboard.aiPreferenceLabel),
               trailingColor: AppColors.aiPurple,
               compact: true,
             ),
@@ -66,7 +67,7 @@ class SettingsScreen extends ConsumerWidget {
               description: 'Choose your preferred theme\nand app appearance.',
               icon: Icons.dark_mode_outlined,
               iconColor: const Color(0xFFE86BD8),
-              trailingText: _titleCase(dashboard.appearanceLabel),
+              trailingText: titleCase(dashboard.appearanceLabel),
               trailingColor: AppColors.aiPurple,
               compact: true,
             ),
@@ -81,13 +82,6 @@ class SettingsScreen extends ConsumerWidget {
             Center(child: Text('Failed to load settings: $error')),
       ),
     );
-  }
-
-  String _titleCase(String value) {
-    if (value.isEmpty) {
-      return value;
-    }
-    return value[0].toUpperCase() + value.substring(1);
   }
 }
 
