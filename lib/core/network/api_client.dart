@@ -17,7 +17,15 @@ class ApiClient {
           receiveTimeout: const Duration(seconds: 10),
           contentType: 'application/json',
         ),
-      );
+      ) {
+    _dio.interceptors.add(
+      InterceptorsWrapper(onError: _onError),
+    );
+  }
+
+  /// Marks a request that has already been retried after a 401 so the
+  /// clear-and-relogin path runs at most once per request.
+  static const String _retriedFlag = 'taopulse.retried401';
 
   final Dio _dio;
   String? _token;
@@ -73,6 +81,40 @@ class ApiClient {
   Future<Options> _authorizedOptions() async {
     final token = await _getToken();
     return Options(headers: {'Authorization': 'Bearer $token'});
+  }
+
+  /// On a `401 Unauthorized`, clears the cached token, re-logs in once and
+  /// transparently retries the original request. Guarded by [_retriedFlag] so
+  /// a genuinely-rejected login cannot loop forever, and skipped for the login
+  /// request itself.
+  Future<void> _onError(
+    DioException error,
+    ErrorInterceptorHandler handler,
+  ) async {
+    final request = error.requestOptions;
+    final isUnauthorized = error.response?.statusCode == 401;
+    final isLogin = request.path == '/api/v1/auth/login';
+    final alreadyRetried = request.extra[_retriedFlag] == true;
+
+    if (!isUnauthorized || isLogin || alreadyRetried) {
+      return handler.next(error);
+    }
+
+    // The cached token is dead — drop it and force a fresh login.
+    _token = null;
+
+    try {
+      final token = await _getToken();
+      request.extra[_retriedFlag] = true;
+      request.headers['Authorization'] = 'Bearer $token';
+      final response = await _dio.fetch<dynamic>(request);
+      return handler.resolve(response);
+    } on DioException catch (retryError) {
+      return handler.next(retryError);
+    } catch (_) {
+      // Re-login failed (e.g. network/login error) — surface the original 401.
+      return handler.next(error);
+    }
   }
 
   Future<String> _getToken() async {
