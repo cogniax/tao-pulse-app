@@ -128,11 +128,26 @@ class AskAiScreen extends ConsumerWidget {
       const SnackBar(content: Text('Sending message to TaoPulse AI...')),
     );
 
-    final reply = await ref.read(askAiRepositoryProvider).sendMessage(message);
+    final ChatReply reply;
+    try {
+      reply = await ref.read(askAiRepositoryProvider).sendMessage(message);
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      messenger.showSnackBar(
+        const SnackBar(
+          content: Text("Couldn't reach TaoPulse AI. Please try again."),
+        ),
+      );
+      return;
+    } finally {
+      messenger.hideCurrentSnackBar();
+    }
+
     if (!context.mounted) {
       return;
     }
-    messenger.hideCurrentSnackBar();
 
     await showModalBottomSheet<void>(
       context: context,
