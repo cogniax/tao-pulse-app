@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
+import '../../../shared/widgets/empty_state_view.dart';
 import '../../feed/models/feed_item.dart';
 import 'feed_view_model.dart';
 import 'widgets/feed_item_tile.dart';
@@ -76,15 +77,32 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                 final filteredItems = _applyFilter(items, _selectedFilter);
                 return RefreshIndicator(
                   onRefresh: () => ref.refresh(feedViewModelProvider.future),
-                  child: ListView.separated(
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    padding: EdgeInsets.fromLTRB(4, 0, 4, bottomDockClearance),
-                    itemBuilder: (context, index) =>
-                        FeedItemTile(item: filteredItems[index]),
-                    separatorBuilder: (context, index) =>
-                        const SizedBox(height: AppSpacing.sm),
-                    itemCount: filteredItems.length,
-                  ),
+                  child: filteredItems.isEmpty
+                      ? RefreshableEmpty(
+                          child: EmptyStateView(
+                            icon: Icons.graphic_eq,
+                            title: _selectedFilter == 'All'
+                                ? 'No signals yet'
+                                : 'No $_selectedFilter signals',
+                            message: _selectedFilter == 'All'
+                                ? 'New Bittensor activity will appear here as it happens.'
+                                : 'Nothing matches the $_selectedFilter filter right now. Try another filter or pull to refresh.',
+                          ),
+                        )
+                      : ListView.separated(
+                          physics: const AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.fromLTRB(
+                            4,
+                            0,
+                            4,
+                            bottomDockClearance,
+                          ),
+                          itemBuilder: (context, index) =>
+                              FeedItemTile(item: filteredItems[index]),
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: AppSpacing.sm),
+                          itemCount: filteredItems.length,
+                        ),
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),

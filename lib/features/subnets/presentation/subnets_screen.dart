@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
+import '../../../shared/widgets/empty_state_view.dart';
 import '../data/subnets_repository.dart';
 
 class SubnetsScreen extends ConsumerWidget {
@@ -22,15 +23,24 @@ class SubnetsScreen extends ConsumerWidget {
       body: subnetsAsync.when(
         data: (subnets) => RefreshIndicator(
           onRefresh: () => ref.refresh(subnetsProvider.future),
-          child: ListView.separated(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(4, AppSpacing.md, 4, 108),
-            itemCount: subnets.length,
-            separatorBuilder: (context, index) =>
-                const SizedBox(height: AppSpacing.md),
-            itemBuilder: (context, index) =>
-                _SubnetCard(subnet: subnets[index]),
-          ),
+          child: subnets.isEmpty
+              ? const RefreshableEmpty(
+                  child: EmptyStateView(
+                    icon: Icons.hub_outlined,
+                    title: 'No subnets to show',
+                    message: 'Subnet data will appear here once it is '
+                        'available. Pull down to refresh.',
+                  ),
+                )
+              : ListView.separated(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.fromLTRB(4, AppSpacing.md, 4, 108),
+                  itemCount: subnets.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: AppSpacing.md),
+                  itemBuilder: (context, index) =>
+                      _SubnetCard(subnet: subnets[index]),
+                ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) =>

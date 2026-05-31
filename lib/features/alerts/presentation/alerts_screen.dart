@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
+import '../../../shared/widgets/empty_state_view.dart';
 import '../data/alerts_repository.dart';
 
 class AlertsScreen extends ConsumerStatefulWidget {
@@ -69,19 +70,28 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
           ),
           Expanded(
             child: alertsAsync.when(
-              data: (alerts) => ListView.separated(
-                padding: const EdgeInsets.fromLTRB(4, 0, 4, 108),
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return const _SectionLabel(label: 'TODAY');
-                  }
-                  return _AlertCard(item: alerts[index - 1]);
-                },
-                separatorBuilder: (context, index) => SizedBox(
-                  height: index == 0 ? AppSpacing.md : AppSpacing.sm,
-                ),
-                itemCount: alerts.length + 1,
-              ),
+              data: (alerts) => alerts.isEmpty
+                  ? EmptyStateView(
+                      icon: Icons.notifications_none_rounded,
+                      title: _selectedFilter == 'All'
+                          ? 'No alerts yet'
+                          : 'No $_selectedFilter alerts',
+                      message: "You're all caught up. New alerts will show up "
+                          'here as activity happens.',
+                    )
+                  : ListView.separated(
+                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 108),
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return const _SectionLabel(label: 'TODAY');
+                        }
+                        return _AlertCard(item: alerts[index - 1]);
+                      },
+                      separatorBuilder: (context, index) => SizedBox(
+                        height: index == 0 ? AppSpacing.md : AppSpacing.sm,
+                      ),
+                      itemCount: alerts.length + 1,
+                    ),
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, stackTrace) =>
                   Center(child: Text('Failed to load alerts: $error')),
