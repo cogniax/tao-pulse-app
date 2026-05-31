@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/theme.dart';
+import '../../../shared/widgets/error_retry_view.dart';
 import '../data/alerts_repository.dart';
 
 class AlertSetupScreen extends ConsumerStatefulWidget {
@@ -180,8 +181,11 @@ class _AlertSetupScreenState extends ConsumerState<AlertSetupScreen> {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) =>
-            Center(child: Text('Failed to load alert settings: $error')),
+        error: (error, stackTrace) => ErrorRetryView(
+          message: "We couldn't load alert settings. "
+              'Check your connection and try again.',
+          onRetry: () => ref.invalidate(alertSettingsProvider),
+        ),
       ),
     );
   }

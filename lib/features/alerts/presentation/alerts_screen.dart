@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
+import '../../../shared/widgets/error_retry_view.dart';
 import '../data/alerts_repository.dart';
 
 class AlertsScreen extends ConsumerStatefulWidget {
@@ -83,8 +84,11 @@ class _AlertsScreenState extends ConsumerState<AlertsScreen> {
                 itemCount: alerts.length + 1,
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stackTrace) =>
-                  Center(child: Text('Failed to load alerts: $error')),
+              error: (error, stackTrace) => ErrorRetryView(
+                message: "We couldn't load your alerts. "
+                    'Check your connection and try again.',
+                onRetry: () => ref.invalidate(alertsProvider(_selectedFilter)),
+              ),
             ),
           ),
         ],

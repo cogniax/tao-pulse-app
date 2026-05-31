@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
+import '../../../shared/widgets/error_retry_view.dart';
 import '../data/settings_repository.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -77,8 +78,11 @@ class SettingsScreen extends ConsumerWidget {
           ],
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) =>
-            Center(child: Text('Failed to load settings: $error')),
+        error: (error, stackTrace) => ErrorRetryView(
+          message: "We couldn't load your settings. "
+              'Check your connection and try again.',
+          onRetry: () => ref.invalidate(settingsDashboardProvider),
+        ),
       ),
     );
   }

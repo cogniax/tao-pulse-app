@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
+import '../../../shared/widgets/error_retry_view.dart';
 import '../data/ask_ai_repository.dart';
 
 class AskAiScreen extends ConsumerWidget {
@@ -78,8 +79,11 @@ class AskAiScreen extends ConsumerWidget {
           ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) =>
-            Center(child: Text('Failed to load Ask AI: $error')),
+        error: (error, stackTrace) => ErrorRetryView(
+          message: "We couldn't load Ask AI. "
+              'Check your connection and try again.',
+          onRetry: () => ref.invalidate(askAiDashboardProvider),
+        ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
+import '../../../shared/widgets/error_retry_view.dart';
 import '../../feed/models/feed_item.dart';
 import 'feed_view_model.dart';
 import 'widgets/feed_item_tile.dart';
@@ -88,8 +89,11 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stackTrace) =>
-                  Center(child: Text('Failed to load feed: $error')),
+              error: (error, stackTrace) => ErrorRetryView(
+                message: "We couldn't load your live feed. "
+                    'Check your connection and try again.',
+                onRetry: () => ref.invalidate(feedViewModelProvider),
+              ),
             ),
           ),
         ],
