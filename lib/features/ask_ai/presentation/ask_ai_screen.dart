@@ -22,56 +22,68 @@ class AskAiScreen extends ConsumerWidget {
       ),
       body: dashboardAsync.when(
         data: (dashboard) => Padding(
-          padding: EdgeInsets.fromLTRB(4, AppSpacing.md, 4, 12 + bottomInset),
+          // Clear the AppShell bottom dock (extendBody: true) so the composer
+          // is not hidden behind the navigation bar, matching the Feed screen.
+          padding: EdgeInsets.fromLTRB(4, AppSpacing.md, 4, 92 + bottomInset),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _AskAiHero(),
-              const SizedBox(height: AppSpacing.xxl),
-              const _SectionHeader(title: 'Suggested questions'),
-              const SizedBox(height: AppSpacing.md),
-              SizedBox(
-                height: 214,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: dashboard.suggestions.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(width: AppSpacing.md),
-                  itemBuilder: (context, index) => SizedBox(
-                    width: 210,
-                    child: _PromptCard(
-                      data: dashboard.suggestions[index],
-                      onTap: () => _openChatReply(
-                        context,
-                        ref,
-                        dashboard.suggestions[index].title,
+              // Scrollable so the fixed-height sections never overflow on
+              // short viewports or with larger text scales.
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const _AskAiHero(),
+                      const SizedBox(height: AppSpacing.xxl),
+                      const _SectionHeader(title: 'Suggested questions'),
+                      const SizedBox(height: AppSpacing.md),
+                      SizedBox(
+                        height: 214,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: dashboard.suggestions.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: AppSpacing.md),
+                          itemBuilder: (context, index) => SizedBox(
+                            width: 210,
+                            child: _PromptCard(
+                              data: dashboard.suggestions[index],
+                              onTap: () => _openChatReply(
+                                context,
+                                ref,
+                                dashboard.suggestions[index].title,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: AppSpacing.lg),
+                      const _SectionHeader(
+                        title: 'Recent conversations',
+                        actionLabel: 'Live',
+                      ),
+                      const SizedBox(height: AppSpacing.sm),
+                      SizedBox(
+                        height: 88,
+                        child: ListView.separated(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: dashboard.history.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(width: AppSpacing.md),
+                          itemBuilder: (context, index) => SizedBox(
+                            width: 170,
+                            child: _RecentConversationCard(
+                              data: dashboard.history[index],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: AppSpacing.lg),
-              const _SectionHeader(
-                title: 'Recent conversations',
-                actionLabel: 'Live',
-              ),
-              const SizedBox(height: AppSpacing.sm),
-              SizedBox(
-                height: 88,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: dashboard.history.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(width: AppSpacing.md),
-                  itemBuilder: (context, index) => SizedBox(
-                    width: 170,
-                    child: _RecentConversationCard(
-                      data: dashboard.history[index],
-                    ),
-                  ),
-                ),
-              ),
-              const Spacer(),
               const SizedBox(height: AppSpacing.md),
               _AskAiComposer(onSubmit: () => _openPromptDialog(context, ref)),
             ],
@@ -316,6 +328,8 @@ class _PromptCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.sm),
               Text(
                 data.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.titleLarge?.copyWith(
                   fontSize: 15,
                   height: 1.15,
@@ -324,6 +338,8 @@ class _PromptCard extends StatelessWidget {
               const SizedBox(height: AppSpacing.xs),
               Text(
                 data.subtitle,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary,
                   fontSize: 14,
