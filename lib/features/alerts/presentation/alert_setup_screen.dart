@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/theme.dart';
+import '../../settings/data/settings_repository.dart';
 import '../data/alerts_repository.dart';
 
 class AlertSetupScreen extends ConsumerStatefulWidget {
@@ -218,7 +219,11 @@ class _AlertSetupScreenState extends ConsumerState<AlertSetupScreen> {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Alert settings saved.')));
+      // Refresh every view derived from alert settings so the change is
+      // reflected immediately instead of staying stale until an app restart.
       ref.invalidate(alertSettingsProvider);
+      ref.invalidate(settingsDashboardProvider);
+      ref.invalidate(alertsProvider);
     } finally {
       if (mounted) {
         setState(() => _saving = false);
