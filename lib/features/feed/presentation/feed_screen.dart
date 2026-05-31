@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/theme.dart';
 import '../../../shared/widgets/app_top_bar.dart';
 import '../../feed/models/feed_item.dart';
+import 'feed_validators.dart';
 import 'feed_view_model.dart';
 import 'widgets/feed_item_tile.dart';
 
@@ -114,9 +115,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             .where((item) => item.category == 'Stake Movement')
             .toList();
       case 'Validators':
-        return items
-            .where((item) => item.title.toLowerCase().contains('validator'))
-            .toList();
+        return items.where(feedItemMatchesValidatorFilter).toList();
       case 'Governance':
         return items.where((item) => item.category == 'Governance').toList();
       case 'AI Insights':
