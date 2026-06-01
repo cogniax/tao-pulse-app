@@ -74,6 +74,20 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             child: feedAsync.when(
               data: (items) {
                 final filteredItems = _applyFilter(items, _selectedFilter);
+                if (filteredItems.isEmpty) {
+                  return RefreshIndicator(
+                    onRefresh: () => ref.refresh(feedViewModelProvider.future),
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: const [
+                        SizedBox(height: 120),
+                        Center(
+                          child: Text('No events match this filter'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
                 return RefreshIndicator(
                   onRefresh: () => ref.refresh(feedViewModelProvider.future),
                   child: ListView.separated(
