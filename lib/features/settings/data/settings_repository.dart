@@ -41,7 +41,8 @@ class SettingsRepository {
       fullName: user['full_name'] as String? ?? '',
       initials: user['initials'] as String? ?? '',
       watchingEntities: stats['watching_entities'] as int? ?? watchlist.length,
-      alertsEnabled: stats['alerts_enabled'] as int? ?? activityAlerts.length,
+      alertsEnabled: stats['alerts_enabled'] as int? ??
+          activityAlerts.values.where((enabled) => enabled == true).length,
       aiConversationsThisMonth:
           stats['ai_conversations_this_month'] as int? ?? 0,
       watchingCountLabel: '+${watchlist.length}',
