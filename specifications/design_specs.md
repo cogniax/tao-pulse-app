@@ -75,6 +75,57 @@ SafeArea
 
 ---
 
+# 2.1 Color Tokens
+
+## Brand
+| Token           | Value   |
+| --------------- | ------- |
+| primary         | #6F4BBC |
+| primary-light   | #9B7FE8 |
+| primary-dark    | #4E3190 |
+
+## Background
+| Token      | Value   |
+| ---------- | ------- |
+| bg-primary | #050816 |
+| bg-surface | #0B1023 |
+| bg-card    | #11182D |
+| bg-hover   | #161F3A |
+| border     | rgba(255,255,255,0.06) |
+
+## Text
+| Token          | Value                  |
+| -------------- | ---------------------- |
+| text-primary   | #FFFFFF                |
+| text-secondary | rgba(255,255,255,0.72) |
+| text-muted     | rgba(255,255,255,0.50) |
+| text-disabled  | rgba(255,255,255,0.32) |
+
+## Semantic
+| Token    | Value   |
+| -------- | ------- |
+| success  | #22C55E |
+| warning  | #F59E0B |
+| critical | #EF4444 |
+| info     | #3B82F6 |
+
+---
+
+# 2.2 Typography Tokens
+
+## Scale
+| Token        | Size | Weight | Line Height |
+| ------------ | ---- | ------ | ----------- |
+| hero         | 34   | 700    | 40          |
+| screen-title | 28   | 700    | 34          |
+| section      | 20   | 600    | 28          |
+| card-title   | 18   | 600    | 24          |
+| body         | 15   | 400    | 22          |
+| caption      | 13   | 400    | 18          |
+| metadata     | 11   | 500    | 16          |
+
+---
+
 ## Safe Area
 
 | Area                    | Value |
