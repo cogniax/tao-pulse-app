@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../theme/theme.dart';
 import '../../feed/views/feed_page.dart';
+import '../../subnets/views/subnets_page.dart';
 
 class HomeRootPage extends StatefulWidget {
   const HomeRootPage({super.key});
@@ -23,7 +24,7 @@ class _HomeRootPageState extends State<HomeRootPage> {
 
   static const _pages = <Widget>[
     FeedPage(),
-    _PlaceholderTabPage(label: 'Subnets'),
+    SubnetsPage(),
     _PlaceholderTabPage(label: 'AI Chat'),
     _PlaceholderTabPage(label: 'Alerts'),
     _PlaceholderTabPage(label: 'Profile'),
