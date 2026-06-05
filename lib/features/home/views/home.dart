@@ -2,32 +2,163 @@ import 'package:flutter/material.dart';
 
 import '../../../theme/theme.dart';
 
-class HomeRootPage extends StatelessWidget {
+class HomeRootPage extends StatefulWidget {
   const HomeRootPage({super.key});
+
+  @override
+  State<HomeRootPage> createState() => _HomeRootPageState();
+}
+
+class _HomeRootPageState extends State<HomeRootPage> {
+  int _currentIndex = 0;
+
+  static const _tabs = <_HomeTab>[
+    _HomeTab('Home', Icons.inbox_outlined),
+    _HomeTab('Subnets', Icons.hub_outlined),
+    _HomeTab('AI Chat', Icons.auto_awesome_outlined),
+    _HomeTab('Alerts', Icons.notifications_none_rounded),
+    _HomeTab('Profile', Icons.person_outline_rounded),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: FigmaColors.pageBackground,
-      body: Center(
+      body: IndexedStack(
+        index: _currentIndex,
+        children: List<Widget>.generate(
+          _tabs.length,
+          (index) => _PlaceholderTabPage(label: _tabs[index].label),
+        ),
+      ),
+      bottomNavigationBar: _BottomNavigationBar(
+        tabs: _tabs,
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
+      ),
+    );
+  }
+}
+
+class _HomeTab {
+  const _HomeTab(this.label, this.icon);
+
+  final String label;
+  final IconData icon;
+}
+
+class _BottomNavigationBar extends StatelessWidget {
+  const _BottomNavigationBar({
+    required this.tabs,
+    required this.currentIndex,
+    required this.onTap,
+  });
+
+  final List<_HomeTab> tabs;
+  final int currentIndex;
+  final ValueChanged<int> onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
+
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: FigmaColors.pageBackground,
+        border: Border(
+          top: BorderSide(color: Color(0xFF141416)),
+        ),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            AppSpacing.md,
+            AppSpacing.md,
+            AppSpacing.md,
+            AppSpacing.sm + bottomInset,
+          ),
+          child: Row(
+            children: List<Widget>.generate(
+              tabs.length,
+              (index) => Expanded(
+                child: _BottomNavigationItem(
+                  tab: tabs[index],
+                  selected: index == currentIndex,
+                  onTap: () => onTap(index),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _BottomNavigationItem extends StatelessWidget {
+  const _BottomNavigationItem({
+    required this.tab,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final _HomeTab tab;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = selected
+        ? FigmaColors.brandPrimary
+        : FigmaColors.iconNeutralTertiary;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.button),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            Icon(tab.icon, color: color, size: 28),
+            const SizedBox(height: AppSpacing.xs),
             Text(
-              'Home',
-              style: FigmaTypography.h3Semibold.copyWith(
-                color: FigmaColors.textNeutralPrimary,
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Placeholder content',
-              style: FigmaTypography.bodySmallRegular.copyWith(
-                color: FigmaColors.textNeutralSecondary,
-              ),
+              tab.label,
+              style: FigmaTypography.caption.copyWith(color: color),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _PlaceholderTabPage extends StatelessWidget {
+  const _PlaceholderTabPage({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            label,
+            style: FigmaTypography.h3Semibold.copyWith(
+              color: FigmaColors.textNeutralPrimary,
+            ),
+          ),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            'Placeholder content',
+            style: FigmaTypography.bodySmallRegular.copyWith(
+              color: FigmaColors.textNeutralSecondary,
+            ),
+          ),
+        ],
       ),
     );
   }
