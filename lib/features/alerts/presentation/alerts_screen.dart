@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../theme/theme.dart';
-import '../../../shared/widgets/app_top_bar.dart';
+import '../../../widgets/app_top_bar.dart';
 import '../data/alerts_repository.dart';
 
 class AlertsScreen extends ConsumerStatefulWidget {

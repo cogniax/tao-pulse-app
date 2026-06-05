@@ -28,6 +28,14 @@ class FigmaTypography {
     );
   }
 
+  static TextStyle _compact(double size, FontWeight weight) {
+    return TextStyle(
+      fontFamily: _sfCompactRounded,
+      fontSize: size,
+      fontWeight: weight,
+    );
+  }
+
   static TextStyle _caption(double size) {
     return TextStyle(
       fontFamily: _sfCompactRounded,
@@ -47,8 +55,12 @@ class FigmaTypography {
   static final h4Semibold = _heading(25, FontWeight.w600);
   static final h5Regular = _heading(22, FontWeight.w400);
   static final h5Semibold = _heading(22, FontWeight.w600);
-  static final h6Regular = _heading(18, FontWeight.w400);
-  static final h6Semibold = _heading(18, FontWeight.w600);
+  static final h6Regular = _heading(20, FontWeight.w400);
+  static final h6Semibold = _heading(20, FontWeight.w600);
+  static final h7Regular = _heading(18, FontWeight.w400);
+  static final h7Semibold = _heading(18, FontWeight.w600);
+  static final h8Regular = _heading(16, FontWeight.w400);
+  static final h8Medium = _heading(16, FontWeight.w500);
 
   // Body copy
   static final bodyLargeRegular = _body(18, FontWeight.w400);
@@ -62,6 +74,8 @@ class FigmaTypography {
   static final bodySmallRegular = _body(14, FontWeight.w400);
   static final bodySmallMedium = _body(14, FontWeight.w500);
   static final bodySmallSemibold = _body(14, FontWeight.w600);
+  static final compactBodySmallRegular = _compact(14, FontWeight.w400);
+  static final compactBodySmallMedium = _compact(14, FontWeight.w500);
 
   // Captions
   static final caption = _caption(12);

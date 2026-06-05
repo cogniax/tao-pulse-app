@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../theme/theme.dart';
+import '../../feed/views/feed_page.dart';
 
 class HomeRootPage extends StatefulWidget {
   const HomeRootPage({super.key});
@@ -20,16 +21,21 @@ class _HomeRootPageState extends State<HomeRootPage> {
     _HomeTab('Profile', Icons.person_outline_rounded),
   ];
 
+  static const _pages = <Widget>[
+    FeedPage(),
+    _PlaceholderTabPage(label: 'Subnets'),
+    _PlaceholderTabPage(label: 'AI Chat'),
+    _PlaceholderTabPage(label: 'Alerts'),
+    _PlaceholderTabPage(label: 'Profile'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: FigmaColors.pageBackground,
       body: IndexedStack(
         index: _currentIndex,
-        children: List<Widget>.generate(
-          _tabs.length,
-          (index) => _PlaceholderTabPage(label: _tabs[index].label),
-        ),
+        children: _pages,
       ),
       bottomNavigationBar: _BottomNavigationBar(
         tabs: _tabs,
@@ -60,8 +66,6 @@ class _BottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.paddingOf(context).bottom;
-
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: FigmaColors.pageBackground,
@@ -73,10 +77,10 @@ class _BottomNavigationBar extends StatelessWidget {
         top: false,
         child: Padding(
           padding: EdgeInsets.fromLTRB(
+            AppSpacing.lg * 2,
             AppSpacing.md,
-            AppSpacing.md,
-            AppSpacing.md,
-            AppSpacing.sm + bottomInset,
+            AppSpacing.lg * 2,
+            AppSpacing.lg,
           ),
           child: Row(
             children: List<Widget>.generate(
@@ -116,19 +120,16 @@ class _BottomNavigationItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(AppRadius.button),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(tab.icon, color: color, size: 28),
-            const SizedBox(height: AppSpacing.xs),
-            Text(
-              tab.label,
-              style: FigmaTypography.caption.copyWith(color: color),
-            ),
-          ],
-        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(tab.icon, color: color, size: 24),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            tab.label,
+            style: FigmaTypography.caption.copyWith(color: color),
+          ),
+        ],
       ),
     );
   }

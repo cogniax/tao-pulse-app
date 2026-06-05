@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../theme/theme.dart';
-import '../../../shared/widgets/app_top_bar.dart';
+import '../../../widgets/app_top_bar.dart';
 import '../data/subnets_repository.dart';
 
 class SubnetsScreen extends ConsumerWidget {

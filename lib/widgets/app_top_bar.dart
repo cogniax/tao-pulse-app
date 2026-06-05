@@ -1,7 +1,61 @@
-import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-import '../../theme/theme.dart';
+import 'package:flutter/material.dart';
+
+import '../theme/theme.dart';
+
+class TopBar extends StatelessWidget implements PreferredSizeWidget {
+  const TopBar({
+    super.key,
+    this.left,
+    this.title,
+    this.right,
+    this.toolbarHeight = 62,
+    this.middleSpacing = AppSpacing.md,
+  });
+
+  final Widget? left;
+  final String? title;
+  final Widget? right;
+  final double toolbarHeight;
+  final double middleSpacing;
+
+  @override
+  Size get preferredSize => Size.fromHeight(toolbarHeight);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: FigmaColors.pageBackground,
+      child: SafeArea(
+        bottom: false,
+        child: SizedBox(
+          height: toolbarHeight,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            child: NavigationToolbar(
+              leading: left,
+              middle: title == null
+                  ? null
+                  : Text(
+                      title!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: FigmaTypography.h6Semibold.copyWith(
+                        color: FigmaColors.textNeutralPrimary,
+                      ),
+                    ),
+              trailing: right,
+              centerMiddle: true,
+              middleSpacing: middleSpacing,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class AppTopBar extends StatelessWidget {
   const AppTopBar({
