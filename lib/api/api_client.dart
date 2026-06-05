@@ -17,7 +17,22 @@ class ApiClient {
           receiveTimeout: const Duration(seconds: 10),
           contentType: 'application/json',
         ),
-      );
+      ) {
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onError: (error, handler) {
+          // The login token is cached for the process lifetime. If the server
+          // later rejects it (expired/revoked -> 401), keeping it cached means
+          // every subsequent request fails forever with no way to recover.
+          // Drop it so the next request transparently re-logs in.
+          if (error.response?.statusCode == 401) {
+            _token = null;
+          }
+          handler.next(error);
+        },
+      ),
+    );
+  }
 
   final Dio _dio;
   String? _token;
