@@ -101,10 +101,10 @@ class AlertSettings {
       watching: subnet['watching'] as bool? ?? false,
       activityAlerts:
           (json['activity_alerts'] as Map<String, dynamic>? ?? const {}).map(
-            (key, value) => MapEntry(key, value as bool),
+            (key, value) => MapEntry(key, value == true),
           ),
       otherAlerts: (json['other_alerts'] as Map<String, dynamic>? ?? const {})
-          .map((key, value) => MapEntry(key, value as bool)),
+          .map((key, value) => MapEntry(key, value == true)),
     );
   }
 
