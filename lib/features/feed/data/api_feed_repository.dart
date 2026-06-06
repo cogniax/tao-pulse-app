@@ -28,7 +28,9 @@ class FeedItemMapper {
       insight: json['insight'] as String? ?? '',
       timeAgo: json['time_ago'] as String? ?? '',
       impact: json['impact'] as String? ?? '',
-      tags: (json['tags'] as List<dynamic>? ?? <dynamic>[]).cast<String>(),
+      tags: (json['tags'] as List<dynamic>? ?? <dynamic>[])
+          .whereType<String>()
+          .toList(),
     );
   }
 }
