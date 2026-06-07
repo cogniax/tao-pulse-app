@@ -6,7 +6,7 @@ class FigmaColors {
   // Figma tokens
   // Surface
   static const pageBackground = Colors.black;
-  static const neutralPrimary = Color(0xFF0C0C0D);
+  static const neutralPrimary = Color(0xFF101010);
   static const neutralSecondary = Color(0xFF252426);
   static const neutralTertiary = Color(0xFF3B3B3D);
   static const neutralDisabled = Color(0xFF545356);

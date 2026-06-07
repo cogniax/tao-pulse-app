@@ -69,7 +69,7 @@ class _BottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: const BoxDecoration(
-        color: FigmaColors.pageBackground,
+        color: FigmaColors.neutralPrimary,
         border: Border(
           top: BorderSide(color: Color(0xFF141416)),
         ),
