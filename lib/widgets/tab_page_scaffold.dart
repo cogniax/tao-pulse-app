@@ -9,7 +9,7 @@ class TabPageScaffold extends StatelessWidget {
     required this.child,
     this.backgroundColor = FigmaColors.pageBackground,
     this.contentPadding = const EdgeInsets.symmetric(
-      horizontal: AppSpacing.lg,
+      horizontal: 0,
     ),
   });
 

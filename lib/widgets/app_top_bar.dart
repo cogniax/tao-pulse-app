@@ -12,6 +12,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
     this.right,
     this.toolbarHeight = 62,
     this.middleSpacing = AppSpacing.md,
+    this.horizontalPadding = AppSpacing.lg,
   });
 
   final Widget? left;
@@ -19,6 +20,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? right;
   final double toolbarHeight;
   final double middleSpacing;
+  final double horizontalPadding;
 
   @override
   Size get preferredSize => Size.fromHeight(toolbarHeight);
@@ -32,7 +34,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
         child: SizedBox(
           height: toolbarHeight,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: NavigationToolbar(
               leading: left,
               middle: title == null
@@ -64,12 +66,14 @@ class AppTopBar extends StatelessWidget {
     this.showSearch = true,
     this.rightIcons,
     this.rightActions,
+    this.horizontalPadding = AppSpacing.lg,
   });
 
   final String title;
   final bool showSearch;
   final List<IconData>? rightIcons;
   final List<AppTopBarAction>? rightActions;
+  final double horizontalPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -82,48 +86,51 @@ class AppTopBar extends StatelessWidget {
     final rightActionWidth = actions.isEmpty ? 0.0 : (actions.length * 40.0);
     final sideInset = math.max(leftBrandWidth, rightActionWidth);
 
-    return SizedBox(
-      width: double.infinity,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: SizedBox(
-              width: leftBrandWidth,
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: _TaoPulseBrand(),
-              ),
-            ),
-          ),
-          if (actions.isNotEmpty)
-            Align(
-              alignment: Alignment.centerRight,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+      child: SizedBox(
+        width: double.infinity,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            const Align(
+              alignment: Alignment.centerLeft,
               child: SizedBox(
-                width: sideInset,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
-                  children: actions
-                      .map((action) => _TopBarIconButton(action: action))
-                      .toList(),
+                width: leftBrandWidth,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: _TaoPulseBrand(),
                 ),
               ),
             ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: sideInset),
-            child: Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineMedium?.copyWith(fontSize: 24),
-              textAlign: TextAlign.center,
+            if (actions.isNotEmpty)
+              Align(
+                alignment: Alignment.centerRight,
+                child: SizedBox(
+                  width: sideInset,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    children: actions
+                        .map((action) => _TopBarIconButton(action: action))
+                        .toList(),
+                  ),
+                ),
+              ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: sideInset),
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineMedium?.copyWith(fontSize: 24),
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
