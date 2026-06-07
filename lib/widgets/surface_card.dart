@@ -45,9 +45,6 @@ class SurfaceCard extends StatelessWidget {
       return card;
     }
 
-    return Padding(
-      padding: margin!,
-      child: card,
-    );
+    return Padding(padding: margin!, child: card);
   }
 }

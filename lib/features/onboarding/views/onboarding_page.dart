@@ -22,11 +22,7 @@ class OnboardingPage extends StatelessWidget {
           ),
           child: Column(
             children: [
-              const Expanded(
-                child: Center(
-                  child: _OnboardingTitle(),
-                ),
-              ),
+              const Expanded(child: Center(child: _OnboardingTitle())),
               SizedBox(
                 width: double.infinity,
                 child: FilledButton(
@@ -34,7 +30,9 @@ class OnboardingPage extends StatelessWidget {
                   style: FilledButton.styleFrom(
                     backgroundColor: FigmaColors.brandPrimary,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.lg,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.button),
                     ),
@@ -63,9 +61,7 @@ class _OnboardingTitle extends StatelessWidget {
     return Text(
       'TaoPulse',
       textAlign: TextAlign.center,
-      style: FigmaTypography.h2Bold.copyWith(
-        color: FigmaColors.brandPrimary,
-      ),
+      style: FigmaTypography.h2Bold.copyWith(color: FigmaColors.brandPrimary),
     );
   }
 }

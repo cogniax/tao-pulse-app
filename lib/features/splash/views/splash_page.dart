@@ -24,9 +24,7 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: FigmaColors.pageBackground,
-      body: Center(
-        child: _SplashTitle(),
-      ),
+      body: Center(child: _SplashTitle()),
     );
   }
 }
@@ -39,9 +37,7 @@ class _SplashTitle extends StatelessWidget {
     return Text(
       'TaoPulse',
       textAlign: TextAlign.center,
-      style: FigmaTypography.h2Bold.copyWith(
-        color: FigmaColors.brandPrimary,
-      ),
+      style: FigmaTypography.h2Bold.copyWith(color: FigmaColors.brandPrimary),
     );
   }
 }

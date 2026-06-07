@@ -26,10 +26,7 @@ class FeedCardData {
 }
 
 class FeedCard extends StatelessWidget {
-  const FeedCard({
-    super.key,
-    required this.data,
-  });
+  const FeedCard({super.key, required this.data});
 
   final FeedCardData data;
 
@@ -77,10 +74,9 @@ class FeedCard extends StatelessWidget {
                           const SizedBox(height: 7),
                           Text(
                             data.subtitle,
-                            style:
-                                FigmaTypography.compactBodySmallMedium.copyWith(
-                                  color:
-                                      FigmaColors.textNeutralInversePrimary,
+                            style: FigmaTypography.compactBodySmallMedium
+                                .copyWith(
+                                  color: FigmaColors.textNeutralInversePrimary,
                                 ),
                           ),
                         ],
@@ -137,16 +133,10 @@ class FeedCard extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _FeedCardChip(
-                  label: data.badge,
-                  borderRadius: 8,
-                ),
+                _FeedCardChip(label: data.badge, borderRadius: 8),
                 for (final tag in data.tags) ...[
                   const SizedBox(width: 5),
-                  _FeedCardChip(
-                    label: tag,
-                    borderRadius: AppRadius.full,
-                  ),
+                  _FeedCardChip(label: tag, borderRadius: AppRadius.full),
                 ],
               ],
             ),
@@ -158,10 +148,7 @@ class FeedCard extends StatelessWidget {
 }
 
 class _FeedCardChip extends StatelessWidget {
-  const _FeedCardChip({
-    required this.label,
-    required this.borderRadius,
-  });
+  const _FeedCardChip({required this.label, required this.borderRadius});
 
   final String label;
   final double borderRadius;
@@ -169,7 +156,10 @@ class _FeedCardChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 11),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.xl,
+        vertical: 11,
+      ),
       decoration: BoxDecoration(
         color: FigmaColors.neutralSecondary,
         borderRadius: BorderRadius.circular(borderRadius),

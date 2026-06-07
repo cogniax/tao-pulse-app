@@ -73,10 +73,7 @@ class _FeedPageState extends State<FeedPage> {
   @override
   Widget build(BuildContext context) {
     return TabPageScaffold(
-      appBar: const TopBar(
-        left: _FeedTopBarIcon(),
-        right: SearchButton(),
-      ),
+      appBar: const TopBar(left: _FeedTopBarIcon(), right: SearchButton()),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

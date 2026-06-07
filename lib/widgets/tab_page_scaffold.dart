@@ -8,9 +8,7 @@ class TabPageScaffold extends StatelessWidget {
     this.appBar,
     required this.child,
     this.backgroundColor = FigmaColors.pageBackground,
-    this.contentPadding = const EdgeInsets.symmetric(
-      horizontal: 0,
-    ),
+    this.contentPadding = const EdgeInsets.symmetric(horizontal: 0),
   });
 
   final PreferredSizeWidget? appBar;
@@ -26,10 +24,7 @@ class TabPageScaffold extends StatelessWidget {
       body: SafeArea(
         top: false,
         bottom: false,
-        child: Padding(
-          padding: contentPadding,
-          child: child,
-        ),
+        child: Padding(padding: contentPadding, child: child),
       ),
     );
   }

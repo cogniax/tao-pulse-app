@@ -34,10 +34,7 @@ class _HomeRootPageState extends State<HomeRootPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: FigmaColors.pageBackground,
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _pages,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _pages),
       bottomNavigationBar: _BottomNavigationBar(
         tabs: _tabs,
         currentIndex: _currentIndex,
@@ -70,9 +67,7 @@ class _BottomNavigationBar extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(
         color: FigmaColors.neutralPrimary,
-        border: Border(
-          top: BorderSide(color: Color(0xFF141416)),
-        ),
+        border: Border(top: BorderSide(color: Color(0xFF141416))),
       ),
       child: SafeArea(
         top: false,
