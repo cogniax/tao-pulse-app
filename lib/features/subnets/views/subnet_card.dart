@@ -1,42 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../models/subnet.dart';
 import '../../../theme/theme.dart';
 import '../../../widgets/surface_card.dart';
 
-class SubnetCardData {
-  const SubnetCardData({
-    required this.netuid,
-    required this.name,
-    required this.category,
-    required this.price,
-    required this.priceTrend,
-    required this.marketCap,
-    required this.volume24h,
-    required this.emission,
-    this.watching = false,
-  });
-
-  final String netuid;
-  final String name;
-  final String category;
-  final String price;
-  final String priceTrend;
-  final String marketCap;
-  final String volume24h;
-  final String emission;
-  final bool watching;
-}
-
 class SubnetCard extends StatelessWidget {
-  const SubnetCard({
-    super.key,
-    required this.data,
-  });
+  const SubnetCard({super.key, required this.data});
 
-  final SubnetCardData data;
+  final Subnet data;
 
   @override
   Widget build(BuildContext context) {
+    final categoryLabel = data.category ?? 'Uncategorized';
+
     return SurfaceCard(
       padding: const EdgeInsets.fromLTRB(19, 10, 19, 10),
       borderRadius: AppRadius.xxl,
@@ -45,7 +21,10 @@ class SubnetCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
                 decoration: BoxDecoration(
                   color: FigmaColors.neutralPrimary,
                   borderRadius: BorderRadius.circular(15),
@@ -54,7 +33,7 @@ class SubnetCard extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  data.netuid,
+                  'SN ${data.netuid}',
                   style: FigmaTypography.compactBodySmallMedium.copyWith(
                     color: FigmaColors.textNeutralPrimary,
                   ),
@@ -73,7 +52,7 @@ class SubnetCard extends StatelessWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      data.category,
+                      categoryLabel,
                       style: FigmaTypography.compactBodySmallMedium.copyWith(
                         color: FigmaColors.textNeutralInversePrimary,
                       ),
@@ -111,21 +90,21 @@ class SubnetCard extends StatelessWidget {
             children: [
               _MetricColumn(
                 label: 'Price',
-                value: data.price,
-                trend: data.priceTrend,
+                value: _formatPrice(data.price),
+                trend: _formatPercent(data.priceTrend),
                 trendColor: FigmaColors.textSuccessSubtle,
               ),
               _MetricColumn(
                 label: 'Mkt Cap',
-                value: data.marketCap,
+                value: _formatTao(data.marketCap),
               ),
               _MetricColumn(
                 label: '24h Volume',
-                value: data.volume24h,
+                value: _formatUsd(data.volume24h),
               ),
               _MetricColumn(
                 label: 'emission',
-                value: data.emission,
+                value: _formatPercent(data.emission),
               ),
             ],
           ),
@@ -144,7 +123,7 @@ class _MetricColumn extends StatelessWidget {
   });
 
   final String label;
-  final String value;
+  final String? value;
   final String? trend;
   final Color trendColor;
 
@@ -164,7 +143,7 @@ class _MetricColumn extends StatelessWidget {
           ),
           const SizedBox(height: 1),
           Text(
-            value,
+            value ?? '--',
             style: FigmaTypography.compactBodySmallMedium.copyWith(
               color: FigmaColors.textNeutralPrimary,
             ),
@@ -178,11 +157,7 @@ class _MetricColumn extends StatelessWidget {
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.arrow_upward,
-                        size: 8,
-                        color: trendColor,
-                      ),
+                      Icon(Icons.arrow_upward, size: 8, color: trendColor),
                       const SizedBox(width: 1),
                       Text(
                         trend!,
@@ -197,4 +172,46 @@ class _MetricColumn extends StatelessWidget {
       ),
     );
   }
+}
+
+String? _formatPrice(double? value) {
+  if (value == null) {
+    return null;
+  }
+  return '${value.toStringAsFixed(3)} T';
+}
+
+String? _formatPercent(double? value) {
+  if (value == null) {
+    return null;
+  }
+  return '${value.toStringAsFixed(2)}%';
+}
+
+String? _formatTao(double? value) {
+  if (value == null) {
+    return null;
+  }
+  return 'T ${_formatCompactNumber(value)}';
+}
+
+String? _formatUsd(double? value) {
+  if (value == null) {
+    return null;
+  }
+  return '\$${_formatCompactNumber(value)}';
+}
+
+String _formatCompactNumber(double value) {
+  final absolute = value.abs();
+  if (absolute >= 1000000) {
+    return '${(value / 1000000).toStringAsFixed(absolute >= 10000000 ? 0 : 1)}m';
+  }
+  if (absolute >= 1000) {
+    return '${(value / 1000).toStringAsFixed(absolute >= 10000 ? 0 : 1)}k';
+  }
+  if (value % 1 == 0) {
+    return value.toStringAsFixed(0);
+  }
+  return value.toStringAsFixed(2);
 }

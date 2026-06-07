@@ -15,8 +15,8 @@ class SubnetFilterBar extends StatelessWidget {
   });
 
   final List<SubnetFilter> filters;
-  final String selectedFilter;
-  final ValueChanged<String> onSelected;
+  final SubnetFilterType selectedFilter;
+  final ValueChanged<SubnetFilterType> onSelected;
   final VoidCallback? onSortPressed;
 
   @override
@@ -38,8 +38,8 @@ class SubnetFilterBar extends StatelessWidget {
                 for (var index = 0; index < filters.length; index++) ...[
                   _SubnetFilterChip(
                     filter: filters[index],
-                    selected: filters[index].label == selectedFilter,
-                    onPressed: () => onSelected(filters[index].label),
+                    selected: filters[index].type == selectedFilter,
+                    onPressed: () => onSelected(filters[index].type),
                   ),
                   if (index < filters.length - 1) const SizedBox(width: 5),
                 ],
@@ -67,7 +67,7 @@ class _SubnetFilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     if (filter.count == null) {
       return OutlinedTextButton(
-        label: filter.label,
+        label: filter.type.label,
         selected: selected,
         onPressed: onPressed,
       );
@@ -99,7 +99,7 @@ class _SubnetFilterChip extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                filter.label,
+                filter.type.label,
                 style: FigmaTypography.h8Medium.copyWith(
                   color: foregroundColor,
                 ),
