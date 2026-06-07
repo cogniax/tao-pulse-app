@@ -11,6 +11,6 @@ class AppSpacing {
   static const section = 32.0;
   static const pageHorizontal = 20.0;
   static const pageTop = 20.0;
-  static const bottomNavClearance = 16.0;
+  static const bottomNavClearance = 8.0;
   
 }

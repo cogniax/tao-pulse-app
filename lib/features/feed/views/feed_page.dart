@@ -89,6 +89,9 @@ class _FeedPageState extends State<FeedPage> {
           const SizedBox(height: AppSpacing.lg * 2),
           Expanded(
             child: ListView.separated(
+              padding: const EdgeInsets.only(
+                bottom: AppSpacing.bottomNavClearance,
+              ),
               itemCount: _visibleCards.length,
               separatorBuilder: (context, index) =>
                   const SizedBox(height: AppSpacing.md),

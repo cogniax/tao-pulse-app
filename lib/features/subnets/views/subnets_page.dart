@@ -117,6 +117,9 @@ class _SubnetsPageState extends State<SubnetsPage> {
           const SizedBox(height: AppSpacing.md),
           Expanded(
             child: ListView.separated(
+              padding: const EdgeInsets.only(
+                bottom: AppSpacing.bottomNavClearance,
+              ),
               itemCount: _visibleCards.length,
               separatorBuilder: (context, index) =>
                   const SizedBox(height: 9),

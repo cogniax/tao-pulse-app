@@ -11,19 +11,15 @@ class TabPageScaffold extends StatelessWidget {
     this.contentPadding = const EdgeInsets.symmetric(
       horizontal: AppSpacing.lg,
     ),
-    this.bottomNavBarHeight = AppSpacing.bottomNavBarHeight,
   });
 
   final PreferredSizeWidget? appBar;
   final Widget child;
   final Color backgroundColor;
   final EdgeInsetsGeometry contentPadding;
-  final double bottomNavBarHeight;
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.paddingOf(context).bottom;
-
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: appBar,
@@ -31,9 +27,7 @@ class TabPageScaffold extends StatelessWidget {
         top: false,
         bottom: false,
         child: Padding(
-          padding: contentPadding.add(
-            EdgeInsets.only(bottom: bottomNavBarHeight + bottomInset),
-          ),
+          padding: contentPadding,
           child: child,
         ),
       ),
