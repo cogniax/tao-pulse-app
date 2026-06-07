@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../models/subnet_filter.dart';
 import '../../../theme/theme.dart';
 import '../../../widgets/app_top_bar.dart';
-import '../../../widgets/buttons/app_icon_button.dart';
-import '../../../widgets/buttons/outlined_text_button.dart';
 import '../../../widgets/tab_page_scaffold.dart';
 import 'subnet_card.dart';
+import 'subnet_filter_bar.dart';
 import 'subnet_search_bar.dart';
 
 class SubnetsPage extends StatefulWidget {
@@ -16,13 +16,13 @@ class SubnetsPage extends StatefulWidget {
 }
 
 class _SubnetsPageState extends State<SubnetsPage> {
-  static const _filters = <_SubnetFilter>[
-    _SubnetFilter(label: 'All'),
-    _SubnetFilter(label: 'Saved', count: '9'),
-    _SubnetFilter(label: 'Active', count: '109'),
-    _SubnetFilter(label: 'Immune', count: '12'),
-    _SubnetFilter(label: 'At risk', count: '109'),
-    _SubnetFilter(label: 'Validation'),
+  static const _filters = <SubnetFilter>[
+    SubnetFilter(label: 'All'),
+    SubnetFilter(label: 'Saved', count: '9'),
+    SubnetFilter(label: 'Active', count: '109'),
+    SubnetFilter(label: 'Immune', count: '12'),
+    SubnetFilter(label: 'At risk', count: '109'),
+    SubnetFilter(label: 'Validation'),
   ];
 
   static const _cards = <SubnetCardData>[
@@ -85,34 +85,10 @@ class _SubnetsPageState extends State<SubnetsPage> {
           const SizedBox(height: AppSpacing.md),
           const SubnetSearchBar(),
           const SizedBox(height: AppSpacing.xl),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                AppIconButton(
-                  icon: const Icon(Icons.tune_rounded),
-                  onPressed: () {},
-                ),
-                const SizedBox(width: 5),
-                for (var index = 0; index < _filters.length; index++) ...[
-                  _SubnetFilterChip(
-                    filter: _filters[index],
-                    selected: _filters[index].label == _selectedFilter,
-                    onPressed: () =>
-                        setState(() => _selectedFilter = _filters[index].label),
-                  ),
-                  if (index < _filters.length - 1)
-                    const SizedBox(width: 5),
-                ],
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            _selectedFilter,
-            style: FigmaTypography.footnote.copyWith(
-              color: FigmaColors.textNeutralSecondary,
-            ),
+          SubnetFilterBar(
+            filters: _filters,
+            selectedFilter: _selectedFilter,
+            onSelected: (filter) => setState(() => _selectedFilter = filter),
           ),
           const SizedBox(height: AppSpacing.md),
           Expanded(
@@ -131,82 +107,6 @@ class _SubnetsPageState extends State<SubnetsPage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _SubnetFilter {
-  const _SubnetFilter({
-    required this.label,
-    this.count,
-  });
-
-  final String label;
-  final String? count;
-}
-
-class _SubnetFilterChip extends StatelessWidget {
-  const _SubnetFilterChip({
-    required this.filter,
-    required this.selected,
-    required this.onPressed,
-  });
-
-  final _SubnetFilter filter;
-  final bool selected;
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    if (filter.count == null) {
-      return OutlinedTextButton(
-        label: filter.label,
-        selected: selected,
-        onPressed: onPressed,
-      );
-    }
-
-    final fillColor = selected
-        ? FigmaColors.neutralInverseSecondary
-        : FigmaColors.neutralPrimary;
-    final foregroundColor = selected
-        ? FigmaColors.neutralPrimary
-        : FigmaColors.textNeutralPrimary;
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        child: Ink(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: 10),
-          decoration: BoxDecoration(
-            color: fillColor,
-            borderRadius: BorderRadius.circular(AppRadius.xl),
-            border: Border.all(color: FigmaColors.iconNeutralInverseTertiary),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                filter.label,
-                style: FigmaTypography.h8Medium.copyWith(
-                  color: foregroundColor,
-                ),
-              ),
-              const SizedBox(width: 7),
-              Text(
-                filter.count!,
-                style: FigmaTypography.caption.copyWith(
-                  color: selected
-                      ? FigmaColors.neutralPrimary.withValues(alpha: 0.72)
-                      : const Color(0xFFB1AFB6),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
