@@ -11,10 +11,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:taopulse/app/app.dart';
 
 void main() {
-  testWidgets('App boots into feed tab', (WidgetTester tester) async {
+  testWidgets('app boots through splash and onboarding', (
+    WidgetTester tester,
+  ) async {
     await tester.pumpWidget(const ProviderScope(child: TaoPulseApp()));
+
+    expect(find.text('TaoPulse'), findsOneWidget);
+
+    await tester.pump(const Duration(seconds: 2));
     await tester.pumpAndSettle();
 
-    expect(find.text('Feed'), findsWidgets);
+    expect(find.text('Get Started'), findsOneWidget);
+
+    await tester.tap(find.text('Get Started'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Home'), findsOneWidget);
+    expect(find.text('Subnets'), findsWidgets);
   });
 }

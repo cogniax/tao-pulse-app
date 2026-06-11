@@ -9,19 +9,28 @@ final apiClientProvider = Provider<ApiClient>((ref) {
 });
 
 class ApiClient {
-  ApiClient()
+  ApiClient({String? baseUrl, Dio? dio})
     : _dio = Dio(
-        BaseOptions(
-          baseUrl: _resolveBaseUrl(),
-          connectTimeout: const Duration(seconds: 10),
-          receiveTimeout: const Duration(seconds: 10),
-          contentType: 'application/json',
-        ),
-      );
+        dio?.options ??
+            BaseOptions(
+              baseUrl: baseUrl ?? _resolveBaseUrl(),
+              connectTimeout: const Duration(seconds: 10),
+              receiveTimeout: const Duration(seconds: 10),
+              contentType: 'application/json',
+            ),
+      ) {
+    if (dio != null) {
+      _dio.httpClientAdapter = dio.httpClientAdapter;
+      _dio.interceptors.addAll(dio.interceptors);
+      _dio.transformer = dio.transformer;
+    }
+  }
 
   final Dio _dio;
   String? _token;
   Future<String>? _tokenFuture;
+
+  String get baseUrl => _dio.options.baseUrl;
 
   Future<Map<String, dynamic>> get(
     String path, {
@@ -110,8 +119,7 @@ class ApiClient {
   static String _resolveBaseUrl() {
     const configuredBaseUrl = String.fromEnvironment(
       'API_BASE_URL',
-      // defaultValue: '',
-      defaultValue: 'https://icodex.space',
+      defaultValue: '',
     );
     if (configuredBaseUrl.isNotEmpty) {
       return configuredBaseUrl;
