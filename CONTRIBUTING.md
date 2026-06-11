@@ -33,8 +33,9 @@ flutter doctor
 From the Flutter app directory, install dependencies:
 
 ```bash
-cd taopulse
+cd tao-pulse-app
 flutter pub get
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 Run the app on a connected device or emulator:
@@ -71,8 +72,9 @@ API docs for app-facing testing: https://icodex.space/docs
 Notes:
 
 - Use the Flutter app directory as the working directory for Flutter or `make` commands.
+- Run `dart run build_runner build --delete-conflicting-outputs` after changing annotated router or Riverpod files, or use `make gen`.
 - Make sure an emulator or physical device is available before running the app.
-- If you change dependencies, run `flutter pub get` or `make bootstrap` again.
+- If you change dependencies, run `make bootstrap` again so dependencies and generated files stay in sync.
 - `make` is a convenience wrapper around common Flutter commands.
 
 

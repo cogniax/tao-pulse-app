@@ -4,7 +4,7 @@
 help:
 	@echo "Available commands:"
 	@echo ""
-	@echo "  make bootstrap       - Install Flutter dependencies"
+	@echo "  make bootstrap       - Install dependencies and generate code"
 	@echo "  make clean           - Clean Flutter build files"
 	@echo "  make format          - Format Dart code in lib/ and test/"
 	@echo "  make format-check    - Check Dart formatting"
@@ -20,6 +20,7 @@ help:
 
 bootstrap:
 	flutter pub get
+	dart run build_runner build --delete-conflicting-outputs
 
 clean:
 	flutter clean
