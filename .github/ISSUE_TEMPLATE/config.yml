@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Community Chat (Element / Matrix)
+    url: https://matrix.to/#/#taopulse.app:matrix.org
+    about: Ask questions, get design feedback, and coordinate with contributors.
+  - name: GitHub Discussions
+    url: https://github.com/cogniax/tao-pulse-app/discussions
+    about: Roadmap, product ideas, and contributor-facing discussion.
+  - name: Report a Security Vulnerability
+    url: https://github.com/cogniax/tao-pulse-app/security/policy
+    about: Please report vulnerabilities privately — do not open a public issue.

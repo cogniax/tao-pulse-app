@@ -1,0 +1,38 @@
+name: Feature Request
+description: Suggest an idea or improvement for TaoPulse
+title: "[Feature]: "
+labels: ["enhancement", "needs-discussion"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for sharing an idea. For medium or large changes, please discuss
+        the direction before implementation (see CONTRIBUTING.md).
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem
+      description: What problem does this solve, and for whom?
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Expected outcome
+      description: What should happen once this is built?
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it matters
+      description: Why is this change valuable for TaoPulse and its users?
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Any other approaches you thought about?
+    validations:
+      required: false
