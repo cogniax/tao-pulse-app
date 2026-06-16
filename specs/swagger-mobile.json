@@ -1,0 +1,687 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "TaoPulse API",
+        "version": "0.1.0"
+    },
+    "paths": {
+        "/api/health/": {
+            "get": {
+                "operationId": "health_check",
+                "tags": [
+                    "health"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HealthResponseDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/subnets/": {
+            "get": {
+                "operationId": "list_subnets",
+                "description": "CRUD for subnet identities, keyed by ``netuid``.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "category",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "is_active",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "is_verified",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SubnetIdentityDto"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "create_subnet",
+                "description": "CRUD for subnet identities, keyed by ``netuid``.",
+                "tags": [
+                    "subnets"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubnetIdentityRequestDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubnetIdentityDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/subnets/{netuid}/": {
+            "get": {
+                "operationId": "get_subnet",
+                "description": "CRUD for subnet identities, keyed by ``netuid``.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "netuid",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 2147483647,
+                            "minimum": 0
+                        },
+                        "description": "A unique value identifying this subnet identity.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubnetIdentityDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "update_subnet",
+                "description": "CRUD for subnet identities, keyed by ``netuid``.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "netuid",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 2147483647,
+                            "minimum": 0
+                        },
+                        "description": "A unique value identifying this subnet identity.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/SubnetIdentityRequestDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubnetIdentityDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "patch_subnet",
+                "description": "CRUD for subnet identities, keyed by ``netuid``.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "netuid",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 2147483647,
+                            "minimum": 0
+                        },
+                        "description": "A unique value identifying this subnet identity.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchedSubnetIdentityRequestDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubnetIdentityDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "delete_subnet",
+                "description": "CRUD for subnet identities, keyed by ``netuid``.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "netuid",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 2147483647,
+                            "minimum": 0
+                        },
+                        "description": "A unique value identifying this subnet identity.",
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No response body"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "HealthResponseDto": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    },
+                    "service": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "service",
+                    "status"
+                ]
+            },
+            "PatchedSubnetIdentityRequestDto": {
+                "type": "object",
+                "properties": {
+                    "netuid": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64
+                    },
+                    "owner_coldkey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                    },
+                    "owner_hotkey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                    },
+                    "registration_block": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64"
+                    },
+                    "registration_timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "github_repo": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "subnet_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "website_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "discord": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "contact_email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 254
+                    },
+                    "logo_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "modality": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "tempo": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "max_neurons": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "max_validators": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "short_description": {
+                        "type": "string",
+                        "maxLength": 280
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 64
+                        }
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "is_verified": {
+                        "type": "boolean"
+                    },
+                    "category_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "writeOnly": true
+                        },
+                        "writeOnly": true
+                    }
+                }
+            },
+            "SubnetCategorySummaryDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "readOnly": true
+                    },
+                    "slug": {
+                        "type": "string",
+                        "maxLength": 64,
+                        "pattern": "^[-a-zA-Z0-9_]+$"
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 128
+                    },
+                    "description": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "slug"
+                ]
+            },
+            "SubnetIdentityDto": {
+                "type": "object",
+                "properties": {
+                    "netuid": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0
+                    },
+                    "name": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "maxLength": 64
+                    },
+                    "owner_coldkey": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "owner_hotkey": {
+                        "type": "string",
+                        "maxLength": 255
+                    },
+                    "registration_block": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64"
+                    },
+                    "registration_timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "github_repo": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "subnet_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "website_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "discord": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "contact_email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 254
+                    },
+                    "logo_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "modality": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "tempo": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "max_neurons": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "max_validators": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "short_description": {
+                        "type": "string",
+                        "maxLength": 280
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "maxLength": 64
+                        }
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "is_verified": {
+                        "type": "boolean"
+                    },
+                    "categories": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SubnetCategorySummaryDto"
+                        },
+                        "readOnly": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "readOnly": true
+                    }
+                },
+                "required": [
+                    "categories",
+                    "created_at",
+                    "name",
+                    "netuid",
+                    "owner_coldkey",
+                    "owner_hotkey",
+                    "registration_block",
+                    "symbol",
+                    "updated_at"
+                ]
+            },
+            "SubnetIdentityRequestDto": {
+                "type": "object",
+                "properties": {
+                    "netuid": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": 0
+                    },
+                    "name": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                    },
+                    "symbol": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 64
+                    },
+                    "owner_coldkey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                    },
+                    "owner_hotkey": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                    },
+                    "registration_block": {
+                        "type": "integer",
+                        "maximum": 9223372036854775807,
+                        "minimum": -9223372036854775808,
+                        "format": "int64"
+                    },
+                    "registration_timestamp": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
+                    },
+                    "github_repo": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "subnet_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "website_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "discord": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "contact_email": {
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 254
+                    },
+                    "logo_url": {
+                        "type": "string",
+                        "format": "uri",
+                        "maxLength": 500
+                    },
+                    "modality": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "tempo": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "max_neurons": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "max_validators": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "nullable": true
+                    },
+                    "short_description": {
+                        "type": "string",
+                        "maxLength": 280
+                    },
+                    "description": {
+                        "type": "string"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 64
+                        }
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "is_verified": {
+                        "type": "boolean"
+                    },
+                    "category_ids": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer",
+                            "writeOnly": true
+                        },
+                        "writeOnly": true
+                    }
+                },
+                "required": [
+                    "name",
+                    "netuid",
+                    "owner_coldkey",
+                    "owner_hotkey",
+                    "registration_block",
+                    "symbol"
+                ]
+            }
+        }
+    }
+}
