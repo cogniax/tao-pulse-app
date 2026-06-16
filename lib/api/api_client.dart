@@ -1,18 +1,20 @@
-import 'dart:io' show Platform;
-
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final apiClientProvider = Provider<ApiClient>((ref) {
+import '../constants/app_constants.dart';
+
+part 'api_client.g.dart';
+
+@riverpod
+ApiClient apiClient(Ref ref) {
   return ApiClient();
-});
+}
 
 class ApiClient {
   ApiClient()
     : _dio = Dio(
         BaseOptions(
-          baseUrl: _resolveBaseUrl(),
+          baseUrl: AppConstants.apiBaseUrl,
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 10),
           contentType: 'application/json',
@@ -105,22 +107,6 @@ class ApiClient {
       throw Exception('API login failed: token missing.');
     }
     return token;
-  }
-
-  static String _resolveBaseUrl() {
-    const configuredBaseUrl = String.fromEnvironment(
-      'API_BASE_URL',
-      // defaultValue: '',
-      defaultValue: 'https://icodex.space',
-    );
-    if (configuredBaseUrl.isNotEmpty) {
-      return configuredBaseUrl;
-    }
-
-    if (!kIsWeb && Platform.isAndroid) {
-      return 'http://10.0.2.2:5000';
-    }
-    return 'http://127.0.0.1:5000';
   }
 
   Map<String, dynamic> _unwrap(Map<String, dynamic>? body) {
