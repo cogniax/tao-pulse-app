@@ -88,26 +88,31 @@ TaoPulse uses a feature-first Flutter app structure with shared app, core, and U
 
 ```text
 lib/
-├── app/                  # app entry, shell, and routing
-├── core/                 # theme, networking, storage, and core utilities
+├── api/                  # ApiClient (dio) and the apiClientProvider
+├── app/                  # root widget and typed go_router routes
+├── constants/            # app-wide constant values
+├── theme/                # colors, spacing, radius, typography, gradients
+├── widgets/              # shared, feature-agnostic widgets
 ├── features/
 │   └── <feature>/
-│       ├── data/         # repositories and data sources
-│       ├── models/       # feature models
-│       └── presentation/ # screens, view models, and widgets
-├── shared/               # shared widgets and UI helpers
+│       ├── data/         # repositories: interface + Api*/Mock* impls + mappers
+│       ├── models/       # immutable feature models
+│       ├── view_models/  # Riverpod notifiers + immutable view states
+│       └── views/        # screens and widgets
 └── main.dart
 ```
 
-Most product areas follow the same pattern: feature data lives in `data/`, UI and state live in `presentation/`, and reusable app-wide pieces live in `core/` or `shared/`.
+Most product areas follow the same pattern: feature data lives in `data/`, state lives in `view_models/`, UI lives in `views/`, and reusable app-wide pieces live in `widgets/`, `theme/`, or `constants/`.
 
 Dependency flow:
 
 ```text
-Screens / UI -> Providers / view models -> Repositories -> API client
+View (widget) -> ViewModel (Notifier) -> Repository -> ApiClient / Mock
 ```
 
 Riverpod is used to inject app routing, repositories, and feature state.
+
+For the full architecture, state management, repository, navigation, theming, and naming conventions, see [.github/CODE_GUIDELINES.md](.github/CODE_GUIDELINES.md).
 
 # Contributing
 See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines and development setup.
