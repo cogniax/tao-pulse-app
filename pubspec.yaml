@@ -39,6 +39,10 @@ dependencies:
   go_router: ^17.2.3
   dio: ^5.9.2
 
+  # Generated API client package (run `make gen-api` to produce lib/generated/api).
+  api_client:
+    path: lib/generated/api
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

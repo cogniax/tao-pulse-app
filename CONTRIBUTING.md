@@ -39,6 +39,7 @@ make bootstrap                 # install dependencies
 make run / make run-release    # run the app
 make format / format-check     # format code / verify formatting
 make analyze                   # static analysis
+make gen-api                   # regenerate the typed API client from specs/swagger-mobile.json
 ```
 
 Notes:

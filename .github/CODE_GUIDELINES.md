@@ -20,6 +20,11 @@ the codebase stays predictable as it grows.
 - **Code generation:** `build_runner`. Run `make gen` once, or `make watch-gen`
   while developing, after editing any annotated class (`@riverpod`,
   `@TypedGoRoute`, etc.). Generated `*.g.dart` files are committed.
+- **API client:** generated separately from the OpenAPI spec
+  (`specs/swagger-mobile.json`) via `make gen-api` — this is distinct from
+  `make gen` above. It emits a self-contained `dart-dio` package into
+  `lib/generated/`, which is gitignored; rerun `make gen-api` when the spec
+  changes.
 
 ## Project Structure
 
