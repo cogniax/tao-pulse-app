@@ -49,3 +49,9 @@ app.*.map.json
 *.freezed.dart
 *.gr.dart
 *.config.dart
+
+# Generated API client package (run `make gen-api` to produce it)
+/lib/generated/
+
+# Auto-written by openapi_generator_cli on each `make gen-api` run
+/openapi_generator_config.json
