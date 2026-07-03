@@ -28,28 +28,29 @@
         "/api/subnets/": {
             "get": {
                 "operationId": "list_subnets",
-                "description": "CRUD for subnet identities, keyed by ``netuid``.",
+                "description": "Public subnet list: identity + metrics slice. Fixture-backed, no DB.\n\nSupports ``?q=`` (search) and ``?sort=``. When the request is authenticated,\neach row's ``is_saved`` reflects the user's saved set. See subnet_list.md.",
                 "parameters": [
                     {
                         "in": "query",
-                        "name": "category",
+                        "name": "q",
                         "schema": {
                             "type": "string"
-                        }
+                        },
+                        "description": "Case-insensitive substring match on name + tagline."
                     },
                     {
                         "in": "query",
-                        "name": "is_active",
+                        "name": "sort",
                         "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "in": "query",
-                        "name": "is_verified",
-                        "schema": {
-                            "type": "boolean"
-                        }
+                            "type": "string",
+                            "enum": [
+                                "emission",
+                                "market_cap",
+                                "price_change_24h",
+                                "volume_24h"
+                            ]
+                        },
+                        "description": "Metric to sort by, descending. Default market_cap."
                     }
                 ],
                 "tags": [
@@ -62,37 +63,8 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/SubnetIdentityDto"
+                                        "$ref": "#/components/schemas/SubnetListItemDto"
                                     }
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "post": {
-                "operationId": "create_subnet",
-                "description": "CRUD for subnet identities, keyed by ``netuid``.",
-                "tags": [
-                    "subnets"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/SubnetIdentityRequestDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
-                "responses": {
-                    "201": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SubnetIdentityDto"
                                 }
                             }
                         },
@@ -104,17 +76,14 @@
         "/api/subnets/{netuid}/": {
             "get": {
                 "operationId": "get_subnet",
-                "description": "CRUD for subnet identities, keyed by ``netuid``.",
+                "description": "Evergreen subnet header: identity + links + lore (+ per-user is_saved).\n\nFetched once per detail open; the perishable Stats/Pulse tabs are separate,\npollable endpoints. No database — see subnet_detail.md.",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "netuid",
                         "schema": {
-                            "type": "integer",
-                            "maximum": 2147483647,
-                            "minimum": 0
+                            "type": "integer"
                         },
-                        "description": "A unique value identifying this subnet identity.",
                         "required": true
                     }
                 ],
@@ -126,90 +95,69 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SubnetIdentityDto"
+                                    "$ref": "#/components/schemas/SubnetAboutDto"
                                 }
                             }
                         },
                         "description": ""
                     }
                 }
-            },
+            }
+        },
+        "/api/subnets/{netuid}/pulse/": {
+            "get": {
+                "operationId": "get_subnet_pulse",
+                "description": "Perishable pulse feed (digest + signals) for the Pulse tab.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "netuid",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubnetPulseDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/subnets/{netuid}/saved/": {
             "put": {
-                "operationId": "update_subnet",
-                "description": "CRUD for subnet identities, keyed by ``netuid``.",
+                "operationId": "save_subnet",
+                "description": "Save/unsave a subnet for the current user. Auth required, idempotent.",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "netuid",
                         "schema": {
-                            "type": "integer",
-                            "maximum": 2147483647,
-                            "minimum": 0
+                            "type": "integer"
                         },
-                        "description": "A unique value identifying this subnet identity.",
                         "required": true
                     }
                 ],
                 "tags": [
                     "subnets"
                 ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/SubnetIdentityRequestDto"
-                            }
-                        }
-                    },
-                    "required": true
-                },
                 "responses": {
                     "200": {
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/SubnetIdentityDto"
-                                }
-                            }
-                        },
-                        "description": ""
-                    }
-                }
-            },
-            "patch": {
-                "operationId": "patch_subnet",
-                "description": "CRUD for subnet identities, keyed by ``netuid``.",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "netuid",
-                        "schema": {
-                            "type": "integer",
-                            "maximum": 2147483647,
-                            "minimum": 0
-                        },
-                        "description": "A unique value identifying this subnet identity.",
-                        "required": true
-                    }
-                ],
-                "tags": [
-                    "subnets"
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/PatchedSubnetIdentityRequestDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/SubnetIdentityDto"
+                                    "$ref": "#/components/schemas/SubnetSavedStateDto"
                                 }
                             }
                         },
@@ -218,18 +166,15 @@
                 }
             },
             "delete": {
-                "operationId": "delete_subnet",
-                "description": "CRUD for subnet identities, keyed by ``netuid``.",
+                "operationId": "unsave_subnet",
+                "description": "Save/unsave a subnet for the current user. Auth required, idempotent.",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "netuid",
                         "schema": {
-                            "type": "integer",
-                            "maximum": 2147483647,
-                            "minimum": 0
+                            "type": "integer"
                         },
-                        "description": "A unique value identifying this subnet identity.",
                         "required": true
                     }
                 ],
@@ -239,6 +184,85 @@
                 "responses": {
                     "204": {
                         "description": "No response body"
+                    }
+                }
+            }
+        },
+        "/api/subnets/{netuid}/stats/": {
+            "get": {
+                "operationId": "get_subnet_stats",
+                "description": "Perishable metrics for the Stats tab (hero + financial + network + roster).\n\nPoll this to refresh; the evergreen header is fetched separately.",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "netuid",
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SubnetStatsDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/subnets/saved/": {
+            "get": {
+                "operationId": "list_saved_subnets",
+                "description": "The current user's saved subnets, as full list rows. Auth required.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "q",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Case-insensitive substring match on name + tagline."
+                    },
+                    {
+                        "in": "query",
+                        "name": "sort",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "emission",
+                                "market_cap",
+                                "price_change_24h",
+                                "volume_24h"
+                            ]
+                        },
+                        "description": "Metric to sort by, descending. Default market_cap."
+                    }
+                ],
+                "tags": [
+                    "subnets"
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/SubnetListItemDto"
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
                     }
                 }
             }
@@ -261,425 +285,498 @@
                     "status"
                 ]
             },
-            "PatchedSubnetIdentityRequestDto": {
+            "SubnetAboutDto": {
                 "type": "object",
+                "description": "Evergreen subnet header: identity + links + lore + per-user is_saved.",
                 "properties": {
                     "netuid": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": 0
+                        "type": "integer"
                     },
                     "name": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 255
-                    },
-                    "symbol": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 64
-                    },
-                    "owner_coldkey": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 255
-                    },
-                    "owner_hotkey": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 255
-                    },
-                    "registration_block": {
-                        "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": -9223372036854775808,
-                        "format": "int64"
-                    },
-                    "registration_timestamp": {
-                        "type": "string",
-                        "format": "date-time",
-                        "nullable": true
-                    },
-                    "github_repo": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "subnet_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "website_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "discord": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "contact_email": {
-                        "type": "string",
-                        "format": "email",
-                        "maxLength": 254
-                    },
-                    "logo_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "modality": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "tempo": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "max_neurons": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "max_validators": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "short_description": {
-                        "type": "string",
-                        "maxLength": 280
-                    },
-                    "description": {
                         "type": "string"
                     },
-                    "tags": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 64
-                        }
+                    "symbol": {
+                        "type": "string"
                     },
-                    "is_active": {
-                        "type": "boolean"
+                    "logo_url": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string"
                     },
                     "is_verified": {
                         "type": "boolean"
                     },
-                    "category_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer",
-                            "writeOnly": true
-                        },
-                        "writeOnly": true
-                    }
-                }
-            },
-            "SubnetCategorySummaryDto": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "readOnly": true
-                    },
-                    "slug": {
-                        "type": "string",
-                        "maxLength": 64,
-                        "pattern": "^[-a-zA-Z0-9_]+$"
-                    },
-                    "name": {
-                        "type": "string",
-                        "maxLength": 128
-                    },
-                    "description": {
-                        "type": "string"
-                    }
-                },
-                "required": [
-                    "id",
-                    "name",
-                    "slug"
-                ]
-            },
-            "SubnetIdentityDto": {
-                "type": "object",
-                "properties": {
-                    "netuid": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": 0
-                    },
-                    "name": {
-                        "type": "string",
-                        "maxLength": 255
-                    },
-                    "symbol": {
-                        "type": "string",
-                        "maxLength": 64
-                    },
-                    "owner_coldkey": {
-                        "type": "string",
-                        "maxLength": 255
-                    },
-                    "owner_hotkey": {
-                        "type": "string",
-                        "maxLength": 255
-                    },
-                    "registration_block": {
-                        "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": -9223372036854775808,
-                        "format": "int64"
-                    },
-                    "registration_timestamp": {
-                        "type": "string",
-                        "format": "date-time",
-                        "nullable": true
-                    },
-                    "github_repo": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "subnet_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "website_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "discord": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "contact_email": {
-                        "type": "string",
-                        "format": "email",
-                        "maxLength": 254
-                    },
-                    "logo_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "modality": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "tempo": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "max_neurons": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "max_validators": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "short_description": {
-                        "type": "string",
-                        "maxLength": 280
-                    },
-                    "description": {
-                        "type": "string"
-                    },
-                    "tags": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "maxLength": 64
-                        }
-                    },
-                    "is_active": {
+                    "is_saved": {
                         "type": "boolean"
                     },
-                    "is_verified": {
-                        "type": "boolean"
+                    "tagline": {
+                        "type": "string",
+                        "nullable": true
                     },
                     "categories": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/SubnetCategorySummaryDto"
-                        },
-                        "readOnly": true
+                            "type": "string"
+                        }
                     },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
+                    "links": {
+                        "$ref": "#/components/schemas/SubnetLinksDto"
                     },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "readOnly": true
+                    "lore": {
+                        "$ref": "#/components/schemas/SubnetLoreDto"
                     }
                 },
                 "required": [
                     "categories",
-                    "created_at",
+                    "is_saved",
+                    "is_verified",
+                    "links",
+                    "logo_url",
+                    "lore",
                     "name",
                     "netuid",
-                    "owner_coldkey",
-                    "owner_hotkey",
-                    "registration_block",
+                    "status",
                     "symbol",
-                    "updated_at"
+                    "tagline"
                 ]
             },
-            "SubnetIdentityRequestDto": {
+            "SubnetLinksDto": {
                 "type": "object",
                 "properties": {
-                    "netuid": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": 0
-                    },
-                    "name": {
+                    "website": {
                         "type": "string",
-                        "minLength": 1,
-                        "maxLength": 255
-                    },
-                    "symbol": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 64
-                    },
-                    "owner_coldkey": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 255
-                    },
-                    "owner_hotkey": {
-                        "type": "string",
-                        "minLength": 1,
-                        "maxLength": 255
-                    },
-                    "registration_block": {
-                        "type": "integer",
-                        "maximum": 9223372036854775807,
-                        "minimum": -9223372036854775808,
-                        "format": "int64"
-                    },
-                    "registration_timestamp": {
-                        "type": "string",
-                        "format": "date-time",
                         "nullable": true
                     },
-                    "github_repo": {
+                    "github": {
                         "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
+                        "nullable": true
                     },
                     "subnet_url": {
                         "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "website_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
+                        "nullable": true
                     },
                     "discord": {
                         "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
+                        "nullable": true
                     },
                     "contact_email": {
                         "type": "string",
-                        "format": "email",
-                        "maxLength": 254
-                    },
-                    "logo_url": {
-                        "type": "string",
-                        "format": "uri",
-                        "maxLength": 500
-                    },
-                    "modality": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
                         "nullable": true
+                    }
+                },
+                "required": [
+                    "contact_email",
+                    "discord",
+                    "github",
+                    "subnet_url",
+                    "website"
+                ]
+            },
+            "SubnetListItemDto": {
+                "type": "object",
+                "description": "One subnet list row: identity + a small metrics slice + saved state.\n\nFixture-backed read contract (no model). See subnet_list.md.",
+                "properties": {
+                    "netuid": {
+                        "type": "integer"
                     },
-                    "tempo": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "max_neurons": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "max_validators": {
-                        "type": "integer",
-                        "maximum": 2147483647,
-                        "minimum": -2147483648,
-                        "nullable": true
-                    },
-                    "short_description": {
-                        "type": "string",
-                        "maxLength": 280
-                    },
-                    "description": {
+                    "name": {
                         "type": "string"
                     },
-                    "tags": {
+                    "symbol": {
+                        "type": "string"
+                    },
+                    "logo_url": {
+                        "type": "string"
+                    },
+                    "tagline": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "categories": {
                         "type": "array",
                         "items": {
-                            "type": "string",
-                            "minLength": 1,
-                            "maxLength": 64
+                            "type": "string"
                         }
                     },
-                    "is_active": {
-                        "type": "boolean"
+                    "status": {
+                        "type": "string"
                     },
                     "is_verified": {
                         "type": "boolean"
                     },
-                    "category_ids": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer",
-                            "writeOnly": true
-                        },
-                        "writeOnly": true
+                    "is_saved": {
+                        "type": "boolean"
+                    },
+                    "metrics": {
+                        "$ref": "#/components/schemas/SubnetListMetricsDto"
                     }
                 },
                 "required": [
+                    "categories",
+                    "is_saved",
+                    "is_verified",
+                    "logo_url",
+                    "metrics",
                     "name",
                     "netuid",
-                    "owner_coldkey",
-                    "owner_hotkey",
-                    "registration_block",
-                    "symbol"
+                    "status",
+                    "symbol",
+                    "tagline"
+                ]
+            },
+            "SubnetListMetricsDto": {
+                "type": "object",
+                "description": "The small perishable slice shown on a subnet list row.",
+                "properties": {
+                    "price": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "price_change_24h": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "market_cap": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "volume_24h": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "emission": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "emission",
+                    "market_cap",
+                    "price",
+                    "price_change_24h",
+                    "volume_24h"
+                ]
+            },
+            "SubnetLoreDto": {
+                "type": "object",
+                "description": "subnetradar research object, keys verbatim (see subnet_identity.md).",
+                "properties": {
+                    "tagline": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "mission": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "mechanism": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "team": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "useCase": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "riskNote": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "story": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "competesWith": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "sources": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "SubnetPulseDigestDto": {
+                "type": "object",
+                "properties": {
+                    "summary": {
+                        "type": "string"
+                    },
+                    "sentiment": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "health": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "net_flow_7d": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "health",
+                    "net_flow_7d",
+                    "sentiment",
+                    "summary"
+                ]
+            },
+            "SubnetPulseDto": {
+                "type": "object",
+                "properties": {
+                    "digest": {
+                        "$ref": "#/components/schemas/SubnetPulseDigestDto"
+                    },
+                    "signals": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SubnetPulseSignalDto"
+                        }
+                    }
+                },
+                "required": [
+                    "digest",
+                    "signals"
+                ]
+            },
+            "SubnetPulseSignalDto": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "time": {
+                        "type": "string"
+                    },
+                    "tone": {
+                        "type": "string"
+                    },
+                    "headline": {
+                        "type": "string"
+                    },
+                    "delta": {
+                        "type": "string"
+                    },
+                    "quote": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "delta",
+                    "headline",
+                    "time",
+                    "tone",
+                    "type"
+                ]
+            },
+            "SubnetSavedStateDto": {
+                "type": "object",
+                "description": "Response for the per-subnet save toggle (PUT).",
+                "properties": {
+                    "netuid": {
+                        "type": "integer"
+                    },
+                    "is_saved": {
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "is_saved",
+                    "netuid"
+                ]
+            },
+            "SubnetStatsDto": {
+                "type": "object",
+                "description": "The full subnet_metrics record — the Stats tab. See subnet_metrics.md.",
+                "properties": {
+                    "netuid": {
+                        "type": "integer"
+                    },
+                    "price": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "price_usd": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "price_change_24h": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "price_change_7d": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "health": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "market_cap": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "volume_24h": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "liquidity": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "token_supply": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "emissions_per_day": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "owner_per_day": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "miner_per_day": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "validator_per_day": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "network_share": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "root_proportion": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "tao_locked": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "incentive_burn": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "uids_active": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "uids_max": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "reg_cost": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    },
+                    "price_series": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "number",
+                                "format": "double"
+                            }
+                        }
+                    },
+                    "top_miners": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/SubnetTopMinerDto"
+                        }
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "emissions_per_day",
+                    "health",
+                    "incentive_burn",
+                    "liquidity",
+                    "market_cap",
+                    "miner_per_day",
+                    "netuid",
+                    "network_share",
+                    "owner_per_day",
+                    "price",
+                    "price_change_24h",
+                    "price_change_7d",
+                    "price_series",
+                    "price_usd",
+                    "reg_cost",
+                    "root_proportion",
+                    "tao_locked",
+                    "token_supply",
+                    "top_miners",
+                    "uids_active",
+                    "uids_max",
+                    "updated_at",
+                    "validator_per_day",
+                    "volume_24h"
+                ]
+            },
+            "SubnetTopMinerDto": {
+                "type": "object",
+                "properties": {
+                    "uid": {
+                        "type": "integer"
+                    },
+                    "hotkey": {
+                        "type": "string"
+                    },
+                    "score": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "reward_per_day": {
+                        "type": "number",
+                        "format": "double",
+                        "nullable": true
+                    }
+                },
+                "required": [
+                    "hotkey",
+                    "reward_per_day",
+                    "score",
+                    "uid"
                 ]
             }
         }
