@@ -1,4 +1,4 @@
-.PHONY: help bootstrap clean format format-check analyze \
+.PHONY: help bootstrap ensure-api clean format format-check analyze \
         gen watch-gen check-openapi-generator gen-api native-splash \
         run run-release build-apk build-appbundle build-ios
 
@@ -28,8 +28,11 @@ help:
 	@echo "  make build-appbundle - Build Android release app bundle"
 	@echo "  make build-ios       - Build iOS release app without codesign"
 
-bootstrap:
+bootstrap: ensure-api
 	flutter pub get
+
+ensure-api:
+	@test -f lib/generated/api/pubspec.yaml || $(MAKE) gen-api
 
 clean:
 	flutter clean

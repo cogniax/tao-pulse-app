@@ -28,6 +28,7 @@ Verify your environment, install dependencies, and run the app:
 
 ```bash
 flutter doctor      # check your setup
+make gen-api        # generate the local API client package
 make bootstrap      # install dependencies
 make run            # run on a connected device or emulator
 ```
@@ -35,11 +36,11 @@ make run            # run on a connected device or emulator
 `make` wraps the common Flutter workflows used in day-to-day development:
 
 ```bash
+make gen-api                   # regenerate the typed API client from specs/swagger-mobile.json
 make bootstrap                 # install dependencies
 make run / make run-release    # run the app
 make format / format-check     # format code / verify formatting
 make analyze                   # static analysis
-make gen-api                   # regenerate the typed API client from specs/swagger-mobile.json
 ```
 
 Notes:
