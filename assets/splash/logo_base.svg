@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1152 1152" width="1152" height="1152" fill="none">
+  <defs>
+    <radialGradient id="tpGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#8C58FB" stop-opacity="0.55"/>
+      <stop offset="55%" stop-color="#5B2FA8" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#8C58FB" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="tpHub" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1A1030"/>
+      <stop offset="100%" stop-color="#0C0A16"/>
+    </linearGradient>
+    <linearGradient id="tpRingG" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#B794FF"/>
+      <stop offset="100%" stop-color="#8C58FB"/>
+    </linearGradient>
+    <filter id="tpSoft" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+    <filter id="tpNode" x="-140%" y="-140%" width="380%" height="380%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+  </defs>
+
+  <!-- ambient glow -->
+  <circle cx="576" cy="576" r="470" fill="url(#tpGlow)"/>
+
+  <!-- radar rings -->
+  <g stroke="#8C58FB" fill="none">
+    <circle cx="576" cy="576" r="470" stroke-opacity="0.14" stroke-width="2"/>
+    <circle cx="576" cy="576" r="430" stroke-opacity="0.40" stroke-width="3"/>
+    <circle cx="576" cy="576" r="340" stroke-opacity="0.42" stroke-width="3"/>
+    <circle cx="576" cy="576" r="240" stroke-opacity="0.36" stroke-width="3"/>
+    <circle cx="576" cy="576" r="140" stroke-opacity="0.30" stroke-width="3"/>
+  </g>
+
+  <!-- crosshair -->
+  <g stroke="#8C58FB" stroke-opacity="0.16" stroke-width="2" stroke-dasharray="4 14">
+    <line x1="106" y1="576" x2="1046" y2="576"/>
+    <line x1="576" y1="106" x2="576" y2="1046"/>
+  </g>
+
+  <!-- subnet links -->
+  <g stroke="url(#tpRingG)" stroke-opacity="0.32" stroke-width="2.5">
+    <line x1="576" y1="576" x2="896" y2="460"/>
+    <line x1="576" y1="576" x2="714" y2="379"/>
+    <line x1="576" y1="576" x2="651" y2="152"/>
+    <line x1="576" y1="576" x2="432" y2="268"/>
+    <line x1="576" y1="576" x2="368" y2="456"/>
+    <line x1="576" y1="576" x2="148" y2="539"/>
+    <line x1="576" y1="576" x2="268" y2="720"/>
+    <line x1="576" y1="576" x2="438" y2="773"/>
+    <line x1="576" y1="576" x2="501" y2="1000"/>
+    <line x1="576" y1="576" x2="746" y2="870"/>
+    <line x1="576" y1="576" x2="784" y2="696"/>
+    <line x1="576" y1="576" x2="1000" y2="651"/>
+  </g>
+
+  <!-- subnet nodes -->
+  <g>
+    <circle cx="896" cy="460" r="18" fill="#8C58FB" filter="url(#tpNode)"/>
+    <circle cx="896" cy="460" r="14" fill="#0C0A16" stroke="#B794FF" stroke-width="4"/>
+    <circle cx="651" cy="152" r="15" fill="#8C58FB" filter="url(#tpNode)"/>
+    <circle cx="651" cy="152" r="11" fill="#0C0A16" stroke="#B794FF" stroke-width="4"/>
+    <circle cx="432" cy="268" r="17" fill="#8C58FB" filter="url(#tpNode)"/>
+    <circle cx="432" cy="268" r="13" fill="#0C0A16" stroke="#B794FF" stroke-width="4"/>
+    <circle cx="368" cy="456" r="19" fill="#8C58FB" filter="url(#tpNode)"/>
+    <circle cx="368" cy="456" r="15" fill="#0C0A16" stroke="#B794FF" stroke-width="4"/>
+    <circle cx="148" cy="539" r="16" fill="#8C58FB" filter="url(#tpNode)"/>
+    <circle cx="148" cy="539" r="12" fill="#0C0A16" stroke="#B794FF" stroke-width="4"/>
+    <circle cx="268" cy="720" r="20" fill="#8C58FB" filter="url(#tpNode)"/>
+    <circle cx="268" cy="720" r="16" fill="#0C0A16" stroke="#B794FF" stroke-width="4"/>
+    <circle cx="501" cy="1000" r="17" fill="#8C58FB" filter="url(#tpNode)"/>
+    <circle cx="501" cy="1000" r="13" fill="#0C0A16" stroke="#B794FF" stroke-width="4"/>
+    <circle cx="746" cy="870" r="18" fill="#8C58FB" filter="url(#tpNode)"/>
+    <circle cx="746" cy="870" r="14" fill="#0C0A16" stroke="#B794FF" stroke-width="4"/>
+    <circle cx="1000" cy="651" r="16" fill="#8C58FB" filter="url(#tpNode)"/>
+    <circle cx="1000" cy="651" r="12" fill="#0C0A16" stroke="#B794FF" stroke-width="4"/>
+
+    <!-- hot subnets (live signal) -->
+    <circle cx="714" cy="379" r="18" fill="#FFEB3B" filter="url(#tpNode)"/>
+    <circle cx="714" cy="379" r="14" fill="#FFEB3B"/>
+    <circle cx="438" cy="773" r="16" fill="#FFEB3B" filter="url(#tpNode)"/>
+    <circle cx="438" cy="773" r="12" fill="#FFEB3B"/>
+    <circle cx="784" cy="696" r="15" fill="#FFEB3B" filter="url(#tpNode)"/>
+    <circle cx="784" cy="696" r="11" fill="#FFEB3B"/>
+  </g>
+
+  <!-- central hub -->
+  <circle cx="576" cy="576" r="128" fill="#8C58FB" filter="url(#tpSoft)" opacity="0.55"/>
+  <circle cx="576" cy="576" r="116" fill="url(#tpHub)" stroke="url(#tpRingG)" stroke-width="5"/>
+  <circle cx="576" cy="576" r="100" fill="none" stroke="#8C58FB" stroke-opacity="0.30" stroke-width="2"/>
+
+  <!-- T glyph (TAO) -->
+  <g fill="#FFEB3B">
+    <rect x="518" y="520" width="116" height="28" rx="8"/>
+    <rect x="561" y="548" width="30" height="92" rx="7"/>
+  </g>
+</svg>
