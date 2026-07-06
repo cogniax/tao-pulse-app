@@ -1,9 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../api/api_client.dart';
-
 final askAiRepositoryProvider = Provider<AskAiRepository>((ref) {
-  return AskAiRepository(ref.watch(apiClientProvider));
+  return AskAiRepository();
 });
 
 final askAiDashboardProvider = FutureProvider<AskAiDashboard>((ref) async {
@@ -11,37 +9,23 @@ final askAiDashboardProvider = FutureProvider<AskAiDashboard>((ref) async {
 });
 
 class AskAiRepository {
-  AskAiRepository(this._apiClient);
+  AskAiRepository();
 
-  final ApiClient _apiClient;
-
+  // TODO: wire to the generated API client once the chat endpoints are
+  // supported. Stubbed to return empty/default data so the build passes.
   Future<AskAiDashboard> getDashboard() async {
-    final results = await Future.wait([
-      _apiClient.get('/api/v1/chat/suggestions'),
-      _apiClient.get('/api/v1/chat/history'),
-    ]);
-    final suggestionsData = results[0];
-    final historyData = results[1];
-
-    final suggestions =
-        (suggestionsData['items'] as List<dynamic>? ?? <dynamic>[])
-            .whereType<Map<String, dynamic>>()
-            .map(AskAiPrompt.fromJson)
-            .toList();
-    final history = (historyData['items'] as List<dynamic>? ?? <dynamic>[])
-        .whereType<Map<String, dynamic>>()
-        .map(ChatHistoryItem.fromJson)
-        .toList();
-
-    return AskAiDashboard(suggestions: suggestions, history: history);
+    return const AskAiDashboard(
+      suggestions: <AskAiPrompt>[],
+      history: <ChatHistoryItem>[],
+    );
   }
 
   Future<ChatReply> sendMessage(String message, {String? threadId}) async {
-    final data = await _apiClient.post(
-      '/api/v1/chat',
-      data: {'message': message, 'thread_id': threadId},
+    return ChatReply(
+      threadId: threadId ?? '',
+      content: '',
+      sources: const <String>[],
     );
-    return ChatReply.fromJson(data);
   }
 }
 

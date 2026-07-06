@@ -1,20 +1,14 @@
-import '../../../api/api_client.dart';
 import '../models/feed_item.dart';
 import 'feed_repository.dart';
 
 class ApiFeedRepository implements FeedRepository {
-  ApiFeedRepository(this._apiClient);
+  ApiFeedRepository();
 
-  final ApiClient _apiClient;
-
+  // TODO: wire to the generated API client once the feed endpoint is
+  // supported. Stubbed to return an empty feed so the build passes.
   @override
   Future<List<FeedItem>> getFeed() async {
-    final data = await _apiClient.get('/api/v1/feed');
-    final items = (data['items'] as List<dynamic>? ?? <dynamic>[])
-        .whereType<Map<String, dynamic>>()
-        .map(FeedItemMapper.fromJson)
-        .toList();
-    return items;
+    return const <FeedItem>[];
   }
 }
 

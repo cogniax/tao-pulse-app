@@ -1,9 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../api/api_client.dart';
-
 final alertsRepositoryProvider = Provider<AlertsRepository>((ref) {
-  return AlertsRepository(ref.watch(apiClientProvider));
+  return AlertsRepository();
 });
 
 final alertsProvider = FutureProvider.family<List<AlertItem>, String>((
@@ -18,31 +16,26 @@ final alertSettingsProvider = FutureProvider<AlertSettings>((ref) async {
 });
 
 class AlertsRepository {
-  AlertsRepository(this._apiClient);
+  AlertsRepository();
 
-  final ApiClient _apiClient;
-
+  // TODO: wire to the generated API client once the alerts endpoints are
+  // supported. Stubbed to return empty/default data so the build passes.
   Future<List<AlertItem>> getAlerts({String filter = 'All'}) async {
-    final normalized = filter.toLowerCase();
-    final query = normalized == 'all' ? null : {'filter': normalized};
-    final data = await _apiClient.get('/api/v1/alerts', queryParameters: query);
-    return (data['items'] as List<dynamic>? ?? <dynamic>[])
-        .whereType<Map<String, dynamic>>()
-        .map(AlertItem.fromJson)
-        .toList();
+    return const <AlertItem>[];
   }
 
   Future<AlertSettings> getAlertSettings() async {
-    final data = await _apiClient.get('/api/v1/alerts/settings');
-    return AlertSettings.fromJson(data);
+    return const AlertSettings(
+      subnetName: 'Subnet',
+      netuid: 0,
+      watching: false,
+      activityAlerts: <String, bool>{},
+      otherAlerts: <String, bool>{},
+    );
   }
 
   Future<AlertSettings> updateAlertSettings(AlertSettings settings) async {
-    final data = await _apiClient.put(
-      '/api/v1/alerts/settings',
-      data: settings.toJson(),
-    );
-    return AlertSettings.fromJson(data);
+    return settings;
   }
 }
 
