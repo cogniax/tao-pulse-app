@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../constants/app_constants.dart';
+import '../features/auth/services/token_refresh_interceptor.dart';
 import 'interceptors/logging_interceptor.dart';
 import '../services/app_logger.dart';
 
@@ -11,6 +12,7 @@ part 'api_client_provider.g.dart';
 @riverpod
 ApiClient apiClient(Ref ref) {
   final logger = ref.watch(appLoggerProvider);
+  final tokenRefreshInterceptor = ref.watch(tokenRefreshInterceptorProvider);
   final dio = Dio(
     BaseOptions(
       baseUrl: AppConstants.apiBaseUrl,
@@ -26,6 +28,10 @@ ApiClient apiClient(Ref ref) {
     basePathOverride: AppConstants.apiBaseUrl,
     interceptors: const <Interceptor>[],
   );
-  client.dio.interceptors.add(LoggingInterceptor(logger));
+
+  client.dio.interceptors.addAll([
+    tokenRefreshInterceptor,
+    LoggingInterceptor(logger),
+  ]);
   return client;
 }

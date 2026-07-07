@@ -5,13 +5,10 @@ import '../../services/app_logger.dart';
 class LoggingInterceptor extends Interceptor {
   LoggingInterceptor(this._logger);
 
-  static const _sensitiveHeaders = {'authorization', 'cookie', 'set-cookie'};
-  static const _sensitiveFields = {
-    'password',
-    'accessToken',
-    'refreshToken',
-    'token',
-  };
+  static const _sensitiveHeaders = {'authorization', 'cookie'};
+  // Body field names redacted from request/response logs. TaoPulse's auth
+  // payloads use `access`/`refresh`, and login sends `password`.
+  static const _sensitiveFields = {'password', 'access', 'refresh'};
 
   final AppLogger _logger;
 

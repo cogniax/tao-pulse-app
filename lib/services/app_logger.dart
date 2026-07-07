@@ -1,5 +1,3 @@
-import 'dart:developer' as developer;
-
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -34,10 +32,10 @@ enum LogLevel {
 
 /// App-wide logger.
 ///
-/// Wraps `dart:developer`'s [developer.log] so entries surface in the Flutter
-/// DevTools logging view with proper levels, names, and error/stack-trace
-/// attribution. Verbose [LogLevel.debug] output is suppressed in release
-/// builds to keep production logs quiet.
+/// Emits entries to the console via [debugPrint] so they surface in the
+/// `flutter run` console and Android logcat, each prefixed with its level and
+/// tag. Verbose [LogLevel.debug] output is suppressed in release builds to keep
+/// production logs quiet.
 ///
 /// Caught errors are forwarded to a [CrashReporter], so a reporting backend
 /// (Crashlytics, Sentry, ...) can be wired in later without touching call
@@ -109,16 +107,17 @@ class AppLogger {
     // Debug chatter is development-only; keep release logs quiet.
     if (kReleaseMode && level == LogLevel.debug) return;
 
-    // Level lives in [name] (keeps DevTools severity filtering); the tag is
-    // prefixed onto the body so flat console/logcat output stays greppable.
+    // Emit to the console via debugPrint so entries surface in the `flutter
+    // run` console and Android logcat. The level label and tag are prefixed
+    // onto the body so flat output stays greppable.
     final tagPrefix = tag != null ? '[$tag] ' : '';
-    developer.log(
-      '$tagPrefix$message',
-      level: level.severity,
-      name: level.displayLabel,
-      error: error,
-      stackTrace: stackTrace,
-    );
+    debugPrint('${level.displayLabel} $tagPrefix$message');
+    if (error != null) {
+      debugPrint('${level.displayLabel} ${tagPrefix}Error: $error');
+    }
+    if (stackTrace != null) {
+      debugPrint('$stackTrace');
+    }
   }
 }
 
