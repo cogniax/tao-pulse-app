@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../theme/theme.dart';
 import '../../feed/views/feed_page.dart';
+import '../../settings/views/settings_screen.dart';
 import '../../subnets/views/list/subnets_page.dart';
 
 class HomeRootPage extends StatefulWidget {
@@ -19,7 +20,7 @@ class _HomeRootPageState extends State<HomeRootPage> {
     _HomeTab('Subnets', Icons.hub_outlined),
     _HomeTab('AI Chat', Icons.auto_awesome_outlined),
     _HomeTab('Alerts', Icons.notifications_none_rounded),
-    _HomeTab('Profile', Icons.person_outline_rounded),
+    _HomeTab('Settings', Icons.settings_outlined),
   ];
 
   static const _pages = <Widget>[
@@ -27,7 +28,7 @@ class _HomeRootPageState extends State<HomeRootPage> {
     SubnetsPage(),
     _PlaceholderTabPage(label: 'AI Chat'),
     _PlaceholderTabPage(label: 'Alerts'),
-    _PlaceholderTabPage(label: 'Profile'),
+    SettingsScreen(),
   ];
 
   @override
